@@ -1,0 +1,24 @@
+{
+  "name": "EmojiSommelier-SlackApp",
+  "version": "1.0.0",
+  "description": "増えすぎた絵文字をカテゴリー分けしてくれる便利なSlackAppです。 起動方法はお近くのテキスト入力欄より `/`と入力すれば色々なコマンドメニューが出てきます",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "gitmoji": "./node_modules/.bin/gitmoji"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tam-bourine/EmojiSommelier-SlackApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tam-bourine/EmojiSommelier-SlackApp/issues"
+  },
+  "homepage": "https://github.com/tam-bourine/EmojiSommelier-SlackApp#readme",
+  "devDependencies": {
+    "gitmoji-c": "^0.2.1"
+  }
+}
