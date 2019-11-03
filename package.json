@@ -20,5 +20,10 @@
   "homepage": "https://github.com/tam-bourine/EmojiSommelier-SlackApp#readme",
   "devDependencies": {
     "gitmoji-c": "^0.2.1"
+  },
+  "dependencies": {
+    "@slack/bolt": "^1.4.1",
+    "dotenv": "^8.2.0",
+    "util": "^0.12.1"
   }
 }
