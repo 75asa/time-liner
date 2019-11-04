@@ -1,0 +1,29 @@
+{
+  "name": "Bolt-Tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "gitmoji": "./node_modules/.bin/gitmoji"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nasat75/Bolt-Tutorial.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nasat75/Bolt-Tutorial/issues"
+  },
+  "homepage": "https://github.com/nasat75/Bolt-Tutorial/#readme",
+  "devDependencies": {
+    "gitmoji-c": "^0.2.1"
+  },
+  "dependencies": {
+    "@slack/bolt": "^1.4.1",
+    "dotenv": "^8.2.0",
+    "util": "^0.12.1"
+  }
+}
