@@ -1,8 +1,13 @@
-require('dotenv').config();
+const config = require("dotenv").config().parsed;
+for (const k in config) {
+  process.env[k] = config[k];
+}
 const { App } = require('@slack/bolt');
+const { LogLevel } = require("@slack/logger");
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
+  logLevel: LogLevel.DEBUG,
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   channel: process.env.CHANNEL_ID
