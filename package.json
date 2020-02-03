@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "gitmoji": "./node_modules/.bin/gitmoji",
-    "dev": "node app.js"
+    "dev": "node app.js",
+    "deploy": "git push origin HEAD && git push heroku master"
   },
   "repository": {
     "type": "git",

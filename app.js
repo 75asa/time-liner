@@ -8,6 +8,11 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
+
+app.post("/slack/events", (req, res, next) => {
+  return res.status(200).json({ 'challenge': req.body.challenge });
+});
+
 // Listens to incoming messages that contain "hello"
 app.message('hello', ({ message, say }) => {
   // say() sends a message to the channel where the event was triggered
