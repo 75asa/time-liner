@@ -4,6 +4,8 @@ for (const k in config) {
 }
 const { App } = require('@slack/bolt');
 const { LogLevel } = require("@slack/logger");
+const express = require('express')
+const server = express()
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
@@ -11,6 +13,10 @@ const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   channel: process.env.CHANNEL_ID
+});
+
+server.post("/slack/events", (req, res, next) => {
+  return res.status(200).json({ 'challenge': req.body.challenge });
 });
 
 app.event('message', async ({ event, context }) => {
@@ -26,6 +32,11 @@ app.event('message', async ({ event, context }) => {
     console.error(error);
   }
 });
+
+// app.message(subtype('me_message'), ({ message }) => {
+//   console.log(`${message.user} said ${message.text}`);
+// });
+
 
 (async () => {
   // Start your app
