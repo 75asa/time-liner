@@ -8,10 +8,9 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
-
-app.post("/slack/events", (req, res) => {
-  return res.status(200).json({ 'challenge': req.body.challenge });
-});
+// app.post("/slack/events", (req, res) => {
+//   return res.status(200).json({ 'challenge': req.body.challenge });
+// });
 
 // Listens to incoming messages that contain "hello"
 app.message('hello', ({ message, say }) => {
