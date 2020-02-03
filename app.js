@@ -14,7 +14,7 @@ const app = new App({
 
 // Listens to incoming messages that contain "hello"
 app.message('hello', ({ message, say }) => {
-  console.log({ message })
+  // console.log({ message })
   // say('hoge')
   say(`おっっす <@${message.user}>`);
 });
