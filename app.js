@@ -11,7 +11,8 @@ const app = new App({
 // Listens to incoming messages that contain "hello"
 app.message('hello', ({ message, say }) => {
   // say() sends a message to the channel where the event was triggered
-  say(`おっっす:hellokitty: <@${message.user}>\n*調子どうよ？*:ago:`);
+  say(JSON.stringify(message))
+  // say(`おっっす:hellokitty: <@${message.user}>\n*調子どうよ？*:ago:`);
 });
 
 (async () => {

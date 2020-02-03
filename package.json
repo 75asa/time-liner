@@ -1,11 +1,12 @@
 {
-  "name": "Bolt-Tutorial",
+  "name": "bolt-tutorial",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "gitmoji": "./node_modules/.bin/gitmoji"
+    "gitmoji": "./node_modules/.bin/gitmoji",
+    "dev": "node app.js"
   },
   "repository": {
     "type": "git",
