@@ -1,3 +1,4 @@
+const port = 3333
 const config = require("dotenv").config().parsed;
 for (const k in config) {
   process.env[k] = config[k];
@@ -19,31 +20,37 @@ server.post("/slack/events", (req, res, next) => {
   return res.status(200).json({ 'challenge': req.body.challenge });
 });
 
-app.event('message', async ({ event, context }) => {
+app.message(/^(.*)/, async ({ context, message }) => {
+  console.log({ context });
+  console.log({ message });
+  const user_text = context.matches[0];
+  const workspace = process.env.SLACK_WORKSPACE;
+  const channel = message.channel;
+  const ts = message.ts.replace('.', '');
+  console.log({ ts });
+  const slack_url = `https://${workspace}.slack.com/archives/${channel}/p${ts}`;
+
+  // botやシステム投稿は無視する
+  if (message.subtype) return
+
   try {
     const result = await app.client.chat.postMessage({
-      token: App.token,
-      channel: App.channel,
-      text: `>> ${message.text}`
+      token: process.env.SLACK_OAUTH_TOKEN,
+      channel: process.env.CHANNEL_NAME,
+      text: slack_url,
+      unfurl_links: true
     });
-    console.log(result);
+    console.log(`ok ${result}`);
   }
   catch (error) {
-    console.error(error);
+    console.error(`no ${error}`);
   }
+  console.log(`> \n${user_text}`);
 });
-
-// app.message(subtype('me_message'), ({ message }) => {
-//   console.log(`${message.user} said ${message.text}`);
-// });
-
 
 (async () => {
   // Start your app
-  await app.start(process.env.PORT || 3000);
+  await app.start(process.env.PORT || port);
 
   console.log('⚡️ Bolt app is running!');
 })();
-
-// RequestURL
-// https://d-tambourine-bolt-tutorial.com/slack/events
