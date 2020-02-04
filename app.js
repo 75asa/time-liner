@@ -16,10 +16,6 @@ const app = new App({
   channel: process.env.CHANNEL_ID
 });
 
-server.post("/slack/events", (req, res, next) => {
-  return res.status(200).json({ 'challenge': req.body.challenge });
-});
-
 app.message(/^(.*)/, async ({ context, message }) => {
   console.log({ context });
   console.log({ message });
