@@ -1,4 +1,4 @@
-const port = 3333
+// const port = 3333
 const config = require("dotenv").config().parsed;
 for (const k in config) {
   process.env[k] = config[k];
@@ -51,8 +51,8 @@ app.message(/^(.*)/, async ({ context, message }) => {
 
 (async () => {
   // Start your app
-  // await app.start(process.env.PORT || port);
-  await app.start();
+  await app.start(process.env.PORT);
+  // await app.start();
 
   console.log('⚡️ Bolt app is running!');
 })();
