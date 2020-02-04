@@ -50,7 +50,8 @@ app.message(/^(.*)/, async ({ context, message }) => {
 
 (async () => {
   // Start your app
-  await app.start(process.env.PORT || port);
+  // await app.start(process.env.PORT || port);
+  await app.start();
 
   console.log('⚡️ Bolt app is running!');
 })();
