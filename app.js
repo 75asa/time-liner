@@ -1,4 +1,3 @@
-// const port = 3333
 const config = require("dotenv").config().parsed;
 for (const k in config) {
   process.env[k] = config[k];
@@ -12,8 +11,7 @@ const server = express()
 const app = new App({
   logLevel: LogLevel.DEBUG,
   token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-  channel: process.env.CHANNEL_ID
+  signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
 server.post("/slack/events", (req, res, next) => {
@@ -41,7 +39,7 @@ app.message(/^(.*)/, async ({ context, message }) => {
       text: slack_url,
       unfurl_links: true
     });
-    console.log(`ok ${result}`);
+    console.log(`ok ${JSON.stringify(result)}`);
   }
   catch (error) {
     console.error(`no ${error}`);
@@ -51,8 +49,7 @@ app.message(/^(.*)/, async ({ context, message }) => {
 
 (async () => {
   // Start your app
-  await app.start(process.env.PORT);
-  // await app.start();
+  await app.start(process.env.PORT || 3000);
 
   console.log('⚡️ Bolt app is running!');
 })();

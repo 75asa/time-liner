@@ -5,7 +5,6 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "gitmoji": "./node_modules/.bin/gitmoji",
     "dev": "./node_modules/.bin/nodemon app.js",
     "deploy": "git push origin HEAD && git push heroku master",
     "ngrok": "ngrok http 3333"
@@ -23,14 +22,11 @@
   "homepage": "https://github.com/nasat75/Bolt-Tutorial/#readme",
   "devDependencies": {
     "@slack/logger": "^2.0.0",
-    "gitmoji-c": "^0.2.1",
     "nodemon": "^2.0.2"
   },
   "dependencies": {
     "@slack/bolt": "^1.4.1",
-    "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "util": "^0.12.1"
+    "express": "^4.17.1"
   }
 }
