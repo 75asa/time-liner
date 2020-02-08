@@ -2,8 +2,7 @@ const config = require("dotenv").config().parsed;
 for (const k in config) {
   process.env[k] = config[k];
 }
-const { App } = require('@slack/bolt');
-const { LogLevel } = require("@slack/logger");
+const { App, LogLevel } = require('@slack/bolt');
 const express = require('express')
 const server = express()
 
@@ -15,31 +14,77 @@ const app = new App({
 });
 
 server.post("/slack/events", (req, res, next) => {
-  console.log(`==========> ${ req }`);
+  console.log(`==========> ${req}`);
   return res.status(200).json({ 'challenge': req.body.challenge });
 });
 
-app.message(/^(.*)/, async ({ context, message }) => {
-  console.log({ context });
+const addUsersInfoContext = async ({ message, context, next }) => {
   console.log({ message });
+  const user = await app.client.users.info({
+    token: context.botToken,
+    user: message.user,
+    include_locale: true
+  });
+
+  console.log({ user })
+
+  // ユーザ情報を追加
+  context.tz_offset = user.tz_offset;
+  context.bio = user.user
+  context.user = user.user.profile;
+
+  next()
+}
+
+const notBotMessage = async ({ message, next }) => {
+  if (!message.subtype || message.subtype !== 'bot_message') next();
+  next()
+};
+
+app.use(notBotMessage)
+app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
+  console.log({ context })
   const user_text = context.matches[0];
   const workspace = process.env.SLACK_WORKSPACE;
   const channel = message.channel;
   const ts = message.ts.replace('.', '');
   console.log({ ts });
-  const slack_url = `https://${workspace}.slack.com/archives/${channel}/p${ts}`;
+  // const slack_url = `https://${workspace}.slack.com/archives/${channel}/p${ts}`;
+  const isIncludeLink = false;
+  const checkLinkRegex = new RegExp(/^(\<.*\>)$/)
+
+  const regexResult = message.text.match(checkLinkRegex)
+
+  console.log({ regexResult })
+
+  const channelInfo = await app.client.channels.info({
+    token: process.env.SLACK_BOT_TOKEN,
+    channel: channel
+  })
+  console.log({ channelInfo })
 
   // botやシステム投稿は無視する
   if (message.subtype) return
 
   try {
     const result = await app.client.chat.postMessage({
-      token: process.env.SLACK_OAUTH_TOKEN,
+      token: process.env.SLACK_BOT_TOKEN,
       channel: process.env.CHANNEL_NAME,
-      text: slack_url,
-      unfurl_links: true
+      text: " ",
+      unfurl_links: true,
+      link_names: true,
+      attachments: [
+        {
+          "color": "#FFC0CB",
+          "author_name": context.user.display_name,
+          "author_link": `https://app.slack.com/team/${message.user}`,
+          "author_icon": context.user.image_original,
+          "text": message.text,
+          "footer": ``
+        }
+      ]
     });
-    console.log(`ok ${JSON.stringify(result)}`);
+    console.log(`✅ ok`);
   }
   catch (error) {
     console.error(`no ${error}`);
