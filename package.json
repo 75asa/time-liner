@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@slack/bolt": "^1.4.1",
+    "@speee-js/jsx-slack": "^1.1.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1"
   }

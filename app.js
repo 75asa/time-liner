@@ -4,6 +4,7 @@ for (const k in config) {
   process.env[k] = config[k];
 }
 const { App, LogLevel } = require('@slack/bolt');
+const { } = require('./src/block')
 const express = require('express')
 const server = express()
 
@@ -58,9 +59,15 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
   if (message.subtype === 'file_share') {
     // TODO: 画像ファイルあるだけ
     context.file = message.files[0]
+    // context.thumb = new URL(context.file.thumb_360)
+    // console.log(`=> \n${context.thumb.href}`)
   }
 
   console.log({ context })
+
+  const blocks = new dealBlock()
+  const result = blocks.dealBlock({ message, context })
+  console.log({ result })
 
   try {
     const result = await app.client.chat.postMessage({
@@ -75,7 +82,7 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
           "elements": [
             {
               "type": "mrkdwn",
-              "text": `posted on #${context.channel.name}`
+              "text": `#${context.channel.name}`
             },
             {
               "type": "mrkdwn",
@@ -101,6 +108,18 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
             "type": "mrkdwn",
             "text": message.text
           }
+        },
+        {
+          "type": "image",
+          "title": {
+            "type": "plain_text",
+            "text": "Please enjoy this photo of a kitten"
+          },
+          // "image_url": encodeURI(context.file.url_private),
+          // "image_url": context.thumb.href,
+          // "image_url": context.file.thub_360,
+          "image_url": "http://placekitten.com/500/500",
+          "alt_text": "An incredibly cute kitten."
         }
       ]
     });
