@@ -1,4 +1,5 @@
 const config = require("dotenv").config().parsed;
+// To clear dotenv cache
 for (const k in config) {
   process.env[k] = config[k];
 }
@@ -13,11 +14,13 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
+// To path slack events challenge parameter
 server.post("/slack/events", (req, res, next) => {
   console.log(`==========> ${req}`);
   return res.status(200).json({ 'challenge': req.body.challenge });
 });
 
+// To add posted user's profile to context
 const addUsersInfoContext = async ({ message, context, next }) => {
   console.log({ message });
   const user = await app.client.users.info({
@@ -36,51 +39,68 @@ const addUsersInfoContext = async ({ message, context, next }) => {
   next()
 }
 
+// To response only user w/o bot
 const notBotMessage = async ({ message, next }) => {
   if (!message.subtype || message.subtype !== 'bot_message') next();
   next()
 };
 
 app.use(notBotMessage)
+
 app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
-  console.log({ context })
-  const user_text = context.matches[0];
-  const workspace = process.env.SLACK_WORKSPACE;
-  const channel = message.channel;
-  const ts = message.ts.replace('.', '');
-  console.log({ ts });
-  // const slack_url = `https://${workspace}.slack.com/archives/${channel}/p${ts}`;
-  const isIncludeLink = false;
-  const checkLinkRegex = new RegExp(/^(\<.*\>)$/)
-
-  const regexResult = message.text.match(checkLinkRegex)
-
-  console.log({ regexResult })
-
   const channelInfo = await app.client.channels.info({
     token: process.env.SLACK_BOT_TOKEN,
-    channel: channel
+    channel: message.channel
   })
   console.log({ channelInfo })
+  context.channel = channelInfo.channel
 
-  // botやシステム投稿は無視する
-  if (message.subtype) return
+  if (message.subtype === 'file_share') {
+    // TODO: 画像ファイルあるだけ
+    context.file = message.files[0]
+  }
+
+  console.log({ context })
 
   try {
     const result = await app.client.chat.postMessage({
       token: process.env.SLACK_BOT_TOKEN,
       channel: process.env.CHANNEL_NAME,
-      text: " ",
+      text: message.text,
       unfurl_links: true,
       link_names: true,
-      attachments: [
+      blocks: [
         {
-          "color": "#FFC0CB",
-          "author_name": context.user.display_name,
-          "author_link": `https://app.slack.com/team/${message.user}`,
-          "author_icon": context.user.image_original,
-          "text": message.text,
-          "footer": ``
+          "type": "context",
+          "elements": [
+            {
+              "type": "mrkdwn",
+              "text": `posted on #${context.channel.name}`
+            },
+            {
+              "type": "mrkdwn",
+              "text": `*|*`
+            },
+            {
+              "type": "image",
+              "image_url": context.user.image_original,
+              "alt_text": context.user.display_name
+            },
+            {
+              "type": "mrkdwn",
+              "text": `*${context.user.display_name}*`
+            }
+          ]
+        },
+        {
+          "type": "divider"
+        },
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": message.text
+          }
         }
       ]
     });
@@ -89,7 +109,6 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
   catch (error) {
     console.error(`no ${error}`);
   }
-  console.log(`> \n${user_text}`);
 });
 
 (async () => {
