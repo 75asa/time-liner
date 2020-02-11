@@ -4,9 +4,9 @@ for (const k in config) {
   process.env[k] = config[k];
 }
 const { App, LogLevel } = require('@slack/bolt');
-const { } = require('./src/block')
 const express = require('express')
 const server = express()
+// const blocks = require('./src/block.js')
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
@@ -23,15 +23,13 @@ server.post("/slack/events", (req, res, next) => {
 
 // To add posted user's profile to context
 const addUsersInfoContext = async ({ message, context, next }) => {
-  console.log({ message });
+  // console.log({ message });
   const user = await app.client.users.info({
     token: context.botToken,
     user: message.user,
     include_locale: true
   });
-
-  console.log({ user })
-
+  // console.log({ user })
   // ユーザ情報を追加
   context.tz_offset = user.tz_offset;
   context.bio = user.user
@@ -39,95 +37,124 @@ const addUsersInfoContext = async ({ message, context, next }) => {
 
   next()
 }
-
 // To response only user w/o bot
 const notBotMessage = async ({ message, next }) => {
   if (!message.subtype || message.subtype !== 'bot_message') next();
   next()
 };
-
 app.use(notBotMessage)
+
+const getFileInfo = async ({ message, context, next }) => {
+  if (message.files) {
+    const images = []
+    await message.files.forEach(async (file) => {
+      // console.log({ file })
+      const publicFile = await app.client.files.sharedPublicURL({
+        file: file.id,
+        token: process.env.SLACK_OAUTH_TOKEN
+      })
+      console.log({ publicFile })
+      let image = {
+        "type": "image",
+        "title": {
+          "type": "plain_text",
+          "text": file.name
+        },
+        "image_url": publicFile.file.permalink_public,
+        "alt_text": file.name
+      }
+      // block.push(image)
+      images.push(image)
+
+    });
+    context.images = images
+  }
+  next()
+};
+app.use(getFileInfo)
 
 app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
   const channelInfo = await app.client.channels.info({
     token: process.env.SLACK_BOT_TOKEN,
     channel: message.channel
   })
-  console.log({ channelInfo })
+  // console.log({ channelInfo })
   context.channel = channelInfo.channel
 
-  if (message.subtype === 'file_share') {
-    // TODO: 画像ファイルあるだけ
-    context.file = message.files[0]
-    // context.thumb = new URL(context.file.thumb_360)
-    // console.log(`=> \n${context.thumb.href}`)
+  let block = []
+
+  const header = {
+    "type": "context",
+    "elements": [
+      {
+        "type": "image",
+        "image_url": context.user.image_original,
+        "alt_text": context.user.display_name
+      },
+      {
+        "type": "mrkdwn",
+        "text": `*${context.user.display_name}*`
+      },
+      {
+        "type": "mrkdwn",
+        "text": `*|*`
+      },
+      {
+        "type": "mrkdwn",
+        "text": `posted on #${context.channel.name}`
+      }
+    ]
+  }
+  const divider = {
+    "type": "divider"
+  }
+  const msg = {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": message.text
+    }
+  }
+  block.push(header)
+  block.push(divider)
+  // 本文がある時のみmsg blockを格納
+  if (message.text) block.push(msg)
+  if (message.files) {
+    context.images.forEach((image) => {
+      block.push(image)
+    })
   }
 
-  console.log({ context })
+  // console.log(`|||||||||||||||||||||||||||||||||||||||`)
 
-  const blocks = new dealBlock()
-  const result = blocks.dealBlock({ message, context })
-  console.log({ result })
-
+  // console.log({ context })
+  console.log(`/////////`);
+  console.log(JSON.stringify(block));
+  console.log(`/////////`);
   try {
-    const result = await app.client.chat.postMessage({
+    // app.client.chat.postMessage({
+    await app.client.chat.postMessage({
       token: process.env.SLACK_BOT_TOKEN,
       channel: process.env.CHANNEL_NAME,
       text: message.text,
       unfurl_links: true,
       link_names: true,
-      blocks: [
-        {
-          "type": "context",
-          "elements": [
-            {
-              "type": "mrkdwn",
-              "text": `#${context.channel.name}`
-            },
-            {
-              "type": "mrkdwn",
-              "text": `*|*`
-            },
-            {
-              "type": "image",
-              "image_url": context.user.image_original,
-              "alt_text": context.user.display_name
-            },
-            {
-              "type": "mrkdwn",
-              "text": `*${context.user.display_name}*`
-            }
-          ]
-        },
-        {
-          "type": "divider"
-        },
-        {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": message.text
-          }
-        },
-        {
-          "type": "image",
-          "title": {
-            "type": "plain_text",
-            "text": "Please enjoy this photo of a kitten"
-          },
-          // "image_url": encodeURI(context.file.url_private),
-          // "image_url": context.thumb.href,
-          // "image_url": context.file.thub_360,
-          "image_url": "http://placekitten.com/500/500",
-          "alt_text": "An incredibly cute kitten."
-        }
-      ]
+      as_user: true,
+      link_names: true,
+      unfurl_media: true,
+      blocks: block
     });
     console.log(`✅ ok`);
   }
   catch (error) {
     console.error(`no ${error}`);
   }
+});
+
+app.action('button_click', ({ body, ack, say }) => {
+  // Acknowledge the action
+  ack();
+  say(`<@${body.user.id}> clicked the button`);
 });
 
 (async () => {

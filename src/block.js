@@ -1,4 +1,4 @@
-export default dealBlock = async ({ message, context }) => {
+export const dealBlock = async ({ message, context }) => {
 
     let defautTemplate = [
         {
