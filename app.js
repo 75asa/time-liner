@@ -4,20 +4,12 @@ for (const k in config) {
   process.env[k] = config[k];
 }
 const { App, LogLevel } = require('@slack/bolt');
-const express = require('express')
-const server = express()
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
   logLevel: LogLevel.DEBUG,
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET
-});
-
-// To path slack events challenge parameter
-server.post("/slack/events", (req, res, next) => {
-  console.log(`==========> ${req}`);
-  return res.status(200).json({ 'challenge': req.body.challenge });
 });
 
 // To add posted user's profile to context
@@ -55,11 +47,6 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
   console.log({ channelInfo })
   context.channel = channelInfo.channel
 
-  if (message.subtype === 'file_share') {
-    // TODO: 画像ファイルあるだけ
-    context.file = message.files[0]
-  }
-
   console.log({ context })
 
   try {
@@ -74,21 +61,21 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
           "type": "context",
           "elements": [
             {
-              "type": "mrkdwn",
-              "text": `posted on #${context.channel.name}`
-            },
-            {
-              "type": "mrkdwn",
-              "text": `*|*`
-            },
-            {
               "type": "image",
               "image_url": context.user.image_original,
               "alt_text": context.user.display_name
             },
             {
               "type": "mrkdwn",
-              "text": `*${context.user.display_name}*`
+              "text": ` *${context.user.display_name}*`
+            },
+            {
+              "type": "mrkdwn",
+              "text": `*|*`
+            },
+            {
+              "type": "mrkdwn",
+              "text": `posted on #${context.channel.name}`
             }
           ]
         },
