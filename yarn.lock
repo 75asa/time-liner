@@ -18,7 +18,7 @@
     raw-body "^2.3.3"
     tsscmp "^1.0.6"
 
-"@slack/logger@>=1.0.0 <3.0.0", "@slack/logger@^2.0.0":
+"@slack/logger@>=1.0.0 <3.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@slack/logger/-/logger-2.0.0.tgz#6a4e1c755849bc0f66dac08a8be54ce790ec0e6b"
   integrity sha512-OkIJpiU2fz6HOJujhlhfIGrc8hB4ibqtf7nnbJQDerG0BqwZCfmgtK5sWzZ0TkXVRBKD5MpLrTmCYyMxoMCgPw==
@@ -460,7 +460,7 @@ execa@^0.7.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-express@^4.16.4, express@^4.17.1:
+express@^4.16.4:
   version "4.17.1"
   resolved "https://registry.yarnpkg.com/express/-/express-4.17.1.tgz#4491fc38605cf51f8629d39c2b5d026f98a4c134"
   integrity sha512-mHJ9O79RqluphRrcw2X/GTh3k9tVv8YcoyY4Kkh4WDMUYKRZUq0h1o0w2rrrxBqM7VoeUVqgb27xlEMXTnYt4g==
