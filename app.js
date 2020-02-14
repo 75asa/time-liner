@@ -5,7 +5,6 @@ for (const k in config) {
 }
 const { App, LogLevel } = require('@slack/bolt');
 const express = require('express')
-const server = express()
 // const blocks = require('./src/block.js')
 
 // Initializes your app with your bot token and signing secret
@@ -15,11 +14,11 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
-// To path slack events challenge parameter
-server.post("/slack/events", (req, res, next) => {
-  console.log(`==========> ${req}`);
-  return res.status(200).json({ 'challenge': req.body.challenge });
-});
+// To response only user w/o bot
+const notBotMessage = async ({ message, next }) => {
+  if (!message.subtype || message.subtype !== 'bot_message') next();
+  next()
+};
 
 // To add posted user's profile to context
 const addUsersInfoContext = async ({ message, context, next }) => {
@@ -34,15 +33,8 @@ const addUsersInfoContext = async ({ message, context, next }) => {
   context.tz_offset = user.tz_offset;
   context.bio = user.user
   context.user = user.user.profile;
-
   next()
 }
-// To response only user w/o bot
-const notBotMessage = async ({ message, next }) => {
-  if (!message.subtype || message.subtype !== 'bot_message') next();
-  next()
-};
-app.use(notBotMessage)
 
 const getFileInfo = async ({ message, context, next }) => {
   if (message.files) {
@@ -71,9 +63,12 @@ const getFileInfo = async ({ message, context, next }) => {
   }
   next()
 };
+app.use(notBotMessage)
 app.use(getFileInfo)
+// app.use(addUsersInfoContext)
 
 app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
+  // app.message(/^(.*)/, async ({ context, message }) => {
   const channelInfo = await app.client.channels.info({
     token: process.env.SLACK_BOT_TOKEN,
     channel: message.channel
@@ -156,6 +151,8 @@ app.action('button_click', ({ body, ack, say }) => {
   ack();
   say(`<@${body.user.id}> clicked the button`);
 });
+
+
 
 (async () => {
   // Start your app
