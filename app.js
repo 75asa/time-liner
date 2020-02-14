@@ -4,8 +4,11 @@ for (const k in config) {
   process.env[k] = config[k];
 }
 const { App, LogLevel } = require('@slack/bolt');
+<<<<<<< HEAD
 const express = require('express')
 // const blocks = require('./src/block.js')
+=======
+>>>>>>> master
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
@@ -14,12 +17,15 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
+<<<<<<< HEAD
 // To response only user w/o bot
 const notBotMessage = async ({ message, next }) => {
   if (!message.subtype || message.subtype !== 'bot_message') next();
   next()
 };
 
+=======
+>>>>>>> master
 // To add posted user's profile to context
 const addUsersInfoContext = async ({ message, context, next }) => {
   // console.log({ message });
@@ -76,6 +82,7 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
   // console.log({ channelInfo })
   context.channel = channelInfo.channel
 
+<<<<<<< HEAD
   let block = []
 
   const header = {
@@ -121,6 +128,9 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
   }
 
   // console.log(`|||||||||||||||||||||||||||||||||||||||`)
+=======
+  console.log({ context })
+>>>>>>> master
 
   // console.log({ context })
   console.log(`/////////`);
@@ -134,10 +144,47 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
       text: message.text,
       unfurl_links: true,
       link_names: true,
+<<<<<<< HEAD
       as_user: true,
       link_names: true,
       unfurl_media: true,
       blocks: block
+=======
+      blocks: [
+        {
+          "type": "context",
+          "elements": [
+            {
+              "type": "image",
+              "image_url": context.user.image_original,
+              "alt_text": context.user.display_name
+            },
+            {
+              "type": "mrkdwn",
+              "text": ` *${context.user.display_name}*`
+            },
+            {
+              "type": "mrkdwn",
+              "text": `*|*`
+            },
+            {
+              "type": "mrkdwn",
+              "text": `posted on #${context.channel.name}`
+            }
+          ]
+        },
+        {
+          "type": "divider"
+        },
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": message.text
+          }
+        }
+      ]
+>>>>>>> master
     });
     console.log(`✅ ok`);
   }

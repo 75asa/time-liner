@@ -1,5 +1,5 @@
 {
-  "name": "bolt-tutorial",
+  "name": "time-liner",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -9,25 +9,14 @@
     "deploy": "git push origin HEAD && git push heroku master",
     "ngrok": "ngrok http 3333"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nasat75/Bolt-Tutorial.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/nasat75/Bolt-Tutorial/issues"
-  },
-  "homepage": "https://github.com/nasat75/Bolt-Tutorial/#readme",
   "devDependencies": {
-    "@slack/logger": "^2.0.0",
     "nodemon": "^2.0.2"
   },
   "dependencies": {
     "@slack/bolt": "^1.4.1",
-    "@speee-js/jsx-slack": "^1.1.0",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1"
+    "dotenv": "^8.2.0"
   }
 }
