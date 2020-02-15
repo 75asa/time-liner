@@ -38,12 +38,12 @@ const getFileInfo = async ({ message, context, next }) => {
   if (message.files) {
     const images = []
     await message.files.forEach(async (file) => {
-      // console.log({ file })
+      console.log({ file })
       const publicFile = await app.client.files.sharedPublicURL({
         file: file.id,
         token: process.env.SLACK_OAUTH_TOKEN
       })
-      console.log({ publicFile })
+      // console.log({ publicFile })
       let image = {
         "type": "image",
         "title": {
