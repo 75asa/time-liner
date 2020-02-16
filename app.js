@@ -4,6 +4,9 @@ for (const k in config) {
   process.env[k] = config[k];
 }
 const { App, LogLevel } = require('@slack/bolt');
+// const fs = require('fs');
+// import _ from 'lodash'
+const _ = require('lodash')
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
@@ -34,6 +37,16 @@ const addUsersInfoContext = async ({ message, context, next }) => {
   next()
 }
 
+const getChannelInfo = async ({ message, context, next }) => {
+  const channelInfo = await app.client.channels.info({
+    token: process.env.SLACK_BOT_TOKEN,
+    channel: message.channel
+  })
+  // console.log({ channelInfo })
+  context.channel = channelInfo.channel
+  next()
+}
+
 const getFileInfo = async ({ message, context, next }) => {
   if (message.files) {
     const images = []
@@ -43,36 +56,21 @@ const getFileInfo = async ({ message, context, next }) => {
         file: file.id,
         token: process.env.SLACK_OAUTH_TOKEN
       })
-      // console.log({ publicFile })
-      let image = {
-        "type": "image",
-        "title": {
-          "type": "plain_text",
-          "text": file.name
-        },
-        "image_url": publicFile.file.permalink_public,
-        "alt_text": file.name
-      }
-      // block.push(image)
-      images.push(image)
-
+      console.log({ publicFile })
+      images.push(publicFile.file.permalink_public)
     });
     context.images = images
   }
-  next()
+  // next()
 };
+
+
 app.use(notBotMessage)
+app.use(getChannelInfo)
 app.use(getFileInfo)
-// app.use(addUsersInfoContext)
+app.use(addUsersInfoContext)
 
 app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
-  // app.message(/^(.*)/, async ({ context, message }) => {
-  const channelInfo = await app.client.channels.info({
-    token: process.env.SLACK_BOT_TOKEN,
-    channel: message.channel
-  })
-  // console.log({ channelInfo })
-  context.channel = channelInfo.channel
 
   let block = []
 
@@ -101,7 +99,7 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
   const divider = {
     "type": "divider"
   }
-  const msg = {
+  let msg = {
     "type": "section",
     "text": {
       "type": "mrkdwn",
@@ -112,20 +110,21 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
   block.push(divider)
   // 本文がある時のみmsg blockを格納
   if (message.text) block.push(msg)
-  if (message.files) {
+  if (context.images) {
     context.images.forEach((image) => {
-      block.push(image)
+      console.log({ image })
+      let msgObje = _.cloneDeep(msg)
+      msgObje.text.text = image
+      block.push(msgObje)
     })
   }
-
-  // console.log(`|||||||||||||||||||||||||||||||||||||||`)
 
   // console.log({ context })
   console.log(`/////////`);
   console.log(JSON.stringify(block));
   console.log(`/////////`);
+  // console.log({ context })
   try {
-    // app.client.chat.postMessage({
     await app.client.chat.postMessage({
       token: process.env.SLACK_BOT_TOKEN,
       channel: process.env.CHANNEL_NAME,
