@@ -19,11 +19,12 @@
     - chat:write
     - links:read
     - links:write
+    - files:write
 - `cp .env.example .env`
   - .env項目
     - `SLACK_WORKSPACE`にslackのワークスペース名
     - `CHANNEL_NAME`に転送先のslackチャンネル名
-    - `PORT`にリスニングしたい番号（入れなければデフォルトでは _3000_ 
+    - `PORT`にリスニングしたい番号（入れなければデフォルトでは _3000_）
     - Basic information
       - `Signing Secret`を`SLACK_SIGNING_SECRET`
     - OAuth & Permission
