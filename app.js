@@ -14,11 +14,13 @@ const app = new App({
 });
 
 // To response only user w/o bot
-const notBotOrThreadMessages = async ({ message, next }) => {
+const notBotMessages = async ({ message, next }) => {
   if (!message.subtype || message.subtype !== 'bot_message') next();
-  if (!message.thread_ts) next();
-  return
 };
+
+const noThreadMessages = async ({ message, next }) => {
+  if (!message.thread_ts) next();
+}
 
 // To add posted user's profile to context
 const addUsersInfoContext = async ({ message, context, next }) => {
@@ -74,7 +76,8 @@ const getFileInfo = async ({ message }) => {
 };
 
 
-app.use(notBotOrThreadMessages)
+app.use(notBotMessages)
+app.use(noThreadMessages)
 app.use(getChannelInfo)
 app.use(addUsersInfoContext)
 
