@@ -4,9 +4,7 @@ for (const k in config) {
   process.env[k] = config[k];
 }
 const { App, LogLevel } = require('@slack/bolt');
-// const fs = require('fs');
-// import _ from 'lodash'
-const _ = require('lodash')
+const request = require('request')
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
@@ -16,9 +14,10 @@ const app = new App({
 });
 
 // To response only user w/o bot
-const notBotMessage = async ({ message, next }) => {
+const notBotOrThreadMessages = async ({ message, next }) => {
   if (!message.subtype || message.subtype !== 'bot_message') next();
-  next()
+  if (!message.thread_ts) next();
+  return
 };
 
 // To add posted user's profile to context
@@ -47,27 +46,36 @@ const getChannelInfo = async ({ message, context, next }) => {
   next()
 }
 
-const getFileInfo = async ({ message, context, next }) => {
-  if (message.files) {
-    const images = []
-    await message.files.forEach(async (file) => {
-      console.log({ file })
-      const publicFile = await app.client.files.sharedPublicURL({
-        file: file.id,
-        token: process.env.SLACK_OAUTH_TOKEN
+const getFileInfo = async ({ message }) => {
+  await message.files.forEach(async (file) => {
+    console.log({ file })
+    const fileBuffer = await new Promise((resolve, reject) => {
+      request({
+        method: 'get',
+        url: file.url_private_download,
+        encoding: null,
+        headers: { Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}` }
+      }, (error, response, body) => {
+        if (error) {
+          reject(error);
+        } else {
+          console.log({ body })
+          resolve(body);
+        }
       })
-      console.log({ publicFile })
-      images.push(publicFile.file.permalink_public)
     });
-    context.images = images
-  }
-  // next()
+    await app.client.files.upload({
+      channels: process.env.CHANNEL_NAME,
+      file: fileBuffer,
+      filename: file.name,
+      token: process.env.SLACK_BOT_TOKEN
+    });
+  });
 };
 
 
-app.use(notBotMessage)
+app.use(notBotOrThreadMessages)
 app.use(getChannelInfo)
-app.use(getFileInfo)
 app.use(addUsersInfoContext)
 
 app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
@@ -110,16 +118,7 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
   block.push(divider)
   // 本文がある時のみmsg blockを格納
   if (message.text) block.push(msg)
-  if (context.images) {
-    context.images.forEach((image) => {
-      console.log({ image })
-      let msgObje = _.cloneDeep(msg)
-      msgObje.text.text = image
-      block.push(msgObje)
-    })
-  }
 
-  // console.log({ context })
   console.log(`/////////`);
   console.log(JSON.stringify(block));
   console.log(`/////////`);
@@ -136,7 +135,13 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
       unfurl_media: true,
       blocks: block
     });
-    console.log(`✅ ok`);
+    console.log(`msg: ok ✅`);
+
+    // ファイルがある場合は送信
+    if (message.files) {
+      getFileInfo({ message })
+      console.log(`file: ok ✅`);
+    }
   }
   catch (error) {
     console.error(`no ${error}`);
