@@ -117,10 +117,27 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
       "text": message.text
     }
   }
+  const button = {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": `kwsk => `
+    },
+    "accessory": {
+      "type": "button",
+      "text": {
+        "type": "plain_text",
+        "text": "直接みにいく",
+        "emoji": true
+      },
+      "action_id": "get_link"
+    }
+  }
   block.push(header)
   block.push(divider)
   // 本文がある時のみmsg blockを格納
   if (message.text) block.push(msg)
+  block.push(button)
 
   console.log(`/////////`);
   console.log(JSON.stringify(block));
@@ -151,12 +168,14 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
   }
 });
 
-app.action('button_click', ({ body, ack, say }) => {
+app.action('get_link', ({ body, ack, say }) => {
+  console.log({ body })
+  console.log({ ack })
+
   // Acknowledge the action
   ack();
   say(`<@${body.user.id}> clicked the button`);
 });
-
 
 
 (async () => {
