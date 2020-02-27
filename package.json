@@ -6,6 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "./node_modules/.bin/nodemon app.js",
+    "build": "tsc -p .",
+    "start": "npm run build && node lib/index.js",
+    "local": "npm run build:live",
+    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "deploy": "git push origin HEAD && git push heroku master",
     "ngrok": "ngrok http 3333"
   },
@@ -13,7 +17,16 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "@types/eslint": "^6.1.8",
+    "@types/node": "^13.7.6",
+    "@typescript-eslint/eslint-plugin": "^2.21.0",
+    "@typescript-eslint/parser": "^2.21.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "nodemon": "^2.0.2",
+    "prettier": "^1.19.1",
+    "typescript": "^3.8.2"
   },
   "dependencies": {
     "@slack/bolt": "^1.4.1",
