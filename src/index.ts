@@ -1,6 +1,6 @@
 import { App, LogLevel } from "@slack/bolt";
 import { config } from "dotenv";
-import { request } from "request";
+import request from "request";
 // const config = require("dotenv").config().parsed;
 // To clear dotenv cache
 for (const k in config.config().parsed) {
