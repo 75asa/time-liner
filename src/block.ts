@@ -8,15 +8,7 @@ type GetFileInfo = {
   message: any
 }
 
-type GetFileInfoTemplate = {
-  type: string;
-  title: {
-    type: string;
-    text: string;
-    image_url: string;
-    alt_text: string;
-  };
-}
+type GetFileInfoTemplate = any
 
 type GetFileInfoResult = Array<GetFileInfoTemplate>
 //
