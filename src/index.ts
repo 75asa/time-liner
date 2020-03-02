@@ -1,6 +1,6 @@
-import { App, LogLevel } from '@slack/bolt';
-import { config } from 'dotenv'
-import { request } from 'request';
+import { App, LogLevel } from "@slack/bolt";
+import { config } from "dotenv";
+import { request } from "request";
 // const config = require("dotenv").config().parsed;
 // To clear dotenv cache
 for (const k in config.config().parsed) {
@@ -16,12 +16,12 @@ const app = new App({
 
 // To response only user w/o bot
 const notBotMessages = async ({ message, next }) => {
-  if (!message.subtype || message.subtype !== 'bot_message') next();
+  if (!message.subtype || message.subtype !== "bot_message") next();
 };
 
 const noThreadMessages = async ({ message, next }) => {
   if (!message.thread_ts) next();
-}
+};
 
 // To add posted user's profile to context
 const addUsersInfoContext = async ({ message, context, next }) => {
@@ -34,38 +34,41 @@ const addUsersInfoContext = async ({ message, context, next }) => {
   // console.log({ user })
   // ユーザ情報を追加
   context.tz_offset = user.tz_offset;
-  context.bio = user.user
+  context.bio = user.user;
   context.user = user.user.profile;
-  next()
-}
+  next();
+};
 
 const getChannelInfo = async ({ message, context, next }) => {
   const channelInfo = await app.client.channels.info({
     token: process.env.SLACK_BOT_TOKEN,
     channel: message.channel
-  })
+  });
   // console.log({ channelInfo })
-  context.channel = channelInfo.channel
-  next()
-}
+  context.channel = channelInfo.channel;
+  next();
+};
 
 const getFileInfo = async ({ message }) => {
-  await message.files.forEach(async (file) => {
-    console.log({ file })
+  await message.files.forEach(async file => {
+    console.log({ file });
     const fileBuffer = await new Promise((resolve, reject) => {
-      request({
-        method: 'get',
-        url: file.url_private_download,
-        encoding: null,
-        headers: { Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}` }
-      }, (error, response, body) => {
-        if (error) {
-          reject(error);
-        } else {
-          console.log({ body })
-          resolve(body);
+      request(
+        {
+          method: "get",
+          url: file.url_private_download,
+          encoding: null,
+          headers: { Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}` }
+        },
+        (error, response, body) => {
+          if (error) {
+            reject(error);
+          } else {
+            console.log({ body });
+            resolve(body);
+          }
         }
-      })
+      );
     });
     await app.client.files.upload({
       channels: process.env.CHANNEL_NAME,
@@ -76,52 +79,50 @@ const getFileInfo = async ({ message }) => {
   });
 };
 
-
-app.use(notBotMessages)
-app.use(noThreadMessages)
-app.use(getChannelInfo)
-app.use(addUsersInfoContext)
+app.use(notBotMessages);
+app.use(noThreadMessages);
+app.use(getChannelInfo);
+app.use(addUsersInfoContext);
 
 app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
-
-  let block = []
+  let block = [];
 
   const header = {
-    "type": "context",
-    "elements": [
+    type: "context",
+    elements: [
       {
-        "type": "image",
-        "image_url": context.user.image_original,
-        "alt_text": context.user.display_name
+        type: "image",
+        image_url: context.user.image_original,
+        alt_text: context.user.display_name
       },
       {
-        "type": "mrkdwn",
-        "text": `*${context.user.display_name}*`
+        type: "mrkdwn",
+        text: `*${context.user.display_name}*`
       },
       {
-        "type": "mrkdwn",
-        "text": `*|*`
+        type: "mrkdwn",
+        text: `*|*`
       },
       {
-        "type": "mrkdwn",
-        "text": `posted on #${context.channel.name}`
+        type: "mrkdwn",
+        text: `posted on #${context.channel.name}`
       }
     ]
-  }
+  };
   const divider = {
-    "type": "divider"
-  }
+    type: "divider"
+  };
   let msg = {
-    "type": "section",
-    "text": {
-      "type": "mrkdwn",
-      "text": message.text
+    type: "section",
+    text: {
+      type: "mrkdwn",
+      text: message.text
     }
-  }
-  block.push(header)
-  block.push(divider)
+  };
+  block.push(header);
+  block.push(divider);
   // 本文がある時のみmsg blockを格納
-  if (message.text) block.push(msg)
+  if (message.text) block.push(msg);
 
   console.log(`/////////`);
   console.log(JSON.stringify(block));
@@ -143,26 +144,23 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
 
     // ファイルがある場合は送信
     if (message.files) {
-      getFileInfo({ message })
+      getFileInfo({ message });
       console.log(`file: ok ✅`);
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error(`no ${error}`);
   }
 });
 
-app.action('button_click', ({ body, ack, say }) => {
+app.action("button_click", ({ body, ack, say }) => {
   // Acknowledge the action
   ack();
   say(`<@${body.user.id}> clicked the button`);
 });
 
-
-
 (async () => {
   // Start your app
   await app.start(process.env.PORT || 3000);
 
-  console.log('⚡️ Bolt app is running!');
+  console.log("⚡️ Bolt app is running!");
 })();
