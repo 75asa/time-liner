@@ -86,7 +86,7 @@ const getFileInfo = async ({ message }: GetFileInfo) => {
           encoding: null,
           headers: { Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}` }
         },
-        (error, response, body) => {
+        (error, body) => {
           if (error) {
             reject(error);
           } else {
@@ -98,7 +98,7 @@ const getFileInfo = async ({ message }: GetFileInfo) => {
     });
     await app.client.files.upload({
       channels: process.env.CHANNEL_NAME,
-      file: fileBuffer,
+      file: fileBuffer as any,
       filename: file.name,
       token: process.env.SLACK_BOT_TOKEN
     });
