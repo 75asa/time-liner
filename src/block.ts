@@ -1,4 +1,27 @@
-export const dealBlock = async ({ message, context }) => {
+// typs
+type DealBlockParams = {
+  message: any
+  context: any
+}
+
+type GetFileInfo = {
+  message: any
+}
+
+type GetFileInfoTemplate = {
+  type: string;
+  title: {
+    type: string;
+    text: string;
+    image_url: string;
+    alt_text: string;
+  };
+}
+
+type GetFileInfoResult = Array<GetFileInfoTemplate>
+//
+
+export const dealBlock = async ({ message, context }: DealBlockParams) => {
   let defautTemplate = [
     {
       type: "context",
@@ -42,18 +65,18 @@ export const dealBlock = async ({ message, context }) => {
   return defautTemplate;
 };
 
-export const getFileInfo = async message => {
-  let result = [];
-  let template = {
+export const getFileInfo = async ({ message }: GetFileInfo) => {
+  let result: GetFileInfoResult = [];
+  let template: GetFileInfoTemplate = {
     type: "image",
     title: {
       type: "plain_text",
-      text: "sorry, image file not found"
+      text: "sorry, image file not found",
+      image_url: "http://placekitten.com/500/500",
+      alt_text: "sorry, image file not found"
     },
-    image_url: "http://placekitten.com/500/500",
-    alt_text: "sorry, image file not found"
   };
-  await message.files.forEach(element => {
+  await message.files.forEach((element: any) => {
     template.title.text = element.name;
     template.title.image_url = element.thub_360;
     template.title.alt_text = `file: ${element.name}`;
