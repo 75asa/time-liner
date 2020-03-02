@@ -5,7 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "./node_modules/.bin/nodemon app.js",
+    "dev": "nodemon",
     "build": "tsc -p .",
     "start": "npm run build && node lib/index.js",
     "local": "npm run build:live",
