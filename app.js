@@ -4,7 +4,7 @@ for (const k in config) {
   process.env[k] = config[k];
 }
 const { App, LogLevel } = require('@slack/bolt');
-const request = require('request')
+const request = require("request");
 
 // Initializes your app with your bot token and signing secret
 const app = new App({

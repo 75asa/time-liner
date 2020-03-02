@@ -1,11 +1,36 @@
 import { App, LogLevel } from "@slack/bolt";
-import { config } from "dotenv";
 import request from "request";
+
+const dotenv = require("dotenv");
 // const config = require("dotenv").config().parsed;
 // To clear dotenv cache
-for (const k in config.config().parsed) {
-  process.env[k] = config[k];
+for (const k in dotenv.config().parsed) {
+  process.env[k] = dotenv[k];
 }
+
+// types
+type NotBotMessages = {
+  message: any
+  next: any
+}
+type NoThreadMessages = {
+  message: any
+  next: any
+}
+type AddUsersInfoContext = {
+  message: any
+  context: any
+  next?: any
+}
+type GetChannelInfo = {
+  message: any
+  context: any
+  next: any
+}
+type GetFileInfo = {
+  message: any
+}
+//
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
@@ -15,16 +40,16 @@ const app = new App({
 });
 
 // To response only user w/o bot
-const notBotMessages = async ({ message, next }) => {
+const notBotMessages: any = async ({ message, next }: NotBotMessages) => {
   if (!message.subtype || message.subtype !== "bot_message") next();
 };
 
-const noThreadMessages = async ({ message, next }) => {
+const noThreadMessages: any = async ({ message, next }: NoThreadMessages) => {
   if (!message.thread_ts) next();
 };
 
 // To add posted user's profile to context
-const addUsersInfoContext = async ({ message, context, next }) => {
+const addUsersInfoContext: any = async ({ message, context, next }: AddUsersInfoContext) => {
   // console.log({ message });
   const user = await app.client.users.info({
     token: context.botToken,
@@ -33,13 +58,14 @@ const addUsersInfoContext = async ({ message, context, next }) => {
   });
   // console.log({ user })
   // ユーザ情報を追加
+  const u = user.user as any
   context.tz_offset = user.tz_offset;
-  context.bio = user.user;
-  context.user = user.user.profile;
+  context.bio = u;
+  context.user = u.profile;
   next();
 };
 
-const getChannelInfo = async ({ message, context, next }) => {
+const getChannelInfo: any = async ({ message, context, next }: GetChannelInfo) => {
   const channelInfo = await app.client.channels.info({
     token: process.env.SLACK_BOT_TOKEN,
     channel: message.channel
@@ -49,8 +75,8 @@ const getChannelInfo = async ({ message, context, next }) => {
   next();
 };
 
-const getFileInfo = async ({ message }) => {
-  await message.files.forEach(async file => {
+const getFileInfo = async ({ message }: GetFileInfo) => {
+  await message.files.forEach(async (file: any) => {
     console.log({ file });
     const fileBuffer = await new Promise((resolve, reject) => {
       request(
@@ -84,7 +110,7 @@ app.use(noThreadMessages);
 app.use(getChannelInfo);
 app.use(addUsersInfoContext);
 
-app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
+app.message(addUsersInfoContext, /^(.*)/ as any, async ({ context, message }: AddUsersInfoContext) => {
   let block = [];
 
   const header = {
@@ -136,7 +162,6 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
       unfurl_links: true,
       link_names: true,
       as_user: true,
-      link_names: true,
       unfurl_media: true,
       blocks: block
     });
