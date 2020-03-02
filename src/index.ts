@@ -1,12 +1,13 @@
 import { App, LogLevel } from "@slack/bolt";
 import request from "request";
 
-const dotenv = require("dotenv");
-// const config = require("dotenv").config().parsed;
-// To clear dotenv cache
-for (const k in dotenv.config().parsed) {
-  process.env[k] = dotenv[k];
-}
+require("dotenv").config();
+// const dotenv = require("dotenv");
+// // const config = require("dotenv").config().parsed;
+// // To clear dotenv cache
+// for (const k in dotenv.config().parsed) {
+//   process.env[k] = dotenv[k];
+// }
 
 // types
 type NotBotMessages = {
