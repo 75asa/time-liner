@@ -50,7 +50,8 @@ export const dealBlock = async ({ message, context }: DealBlockParams) => {
   ];
 
   if (message.subtype === "file_share") {
-    const files = getFileInfo(message)(await files).forEach(file => {
+    const files = await getFileInfo(message)
+    files.forEach(file => {
       defautTemplate.push(file);
     });
   }
