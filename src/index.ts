@@ -1,4 +1,4 @@
-import { App, LogLevel } from "@slack/bolt";
+import { App, LogLevel, NextMiddleware } from "@slack/bolt";
 import request from "request";
 
 require("dotenv").config();
@@ -12,21 +12,21 @@ require("dotenv").config();
 // types
 type NotBotMessages = {
   message: any;
-  next: any;
+  next: NextMiddleware;
 };
 type NoThreadMessages = {
   message: any;
-  next: any;
+  next: NextMiddleware;
 };
 type AddUsersInfoContext = {
   message: any;
   context: any;
-  next?: any;
+  next?: NextMiddleware;
 };
 type GetChannelInfo = {
   message: any;
   context: any;
-  next: any;
+  next: NextMiddleware;
 };
 type GetFileInfo = {
   message: any;
