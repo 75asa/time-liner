@@ -23,34 +23,38 @@ const noThreadMessages = async ({ message, next }) => {
 }
 
 // To add posted user's profile to context
-const addUsersInfoContext = async ({ message, context, next }) => {
-  // console.log({ message });
-  const user = await app.client.users.info({
-    token: context.botToken,
+const addUsersInfoContext = async ({ client, message, context, next }) => {
+  console.log({ message });
+  const user = await client.users.info({
     user: message.user,
     include_locale: true
   });
-  // console.log({ user })
-  // ユーザ情報を追加
-  context.tz_offset = user.tz_offset;
-  context.bio = user.user
-  context.user = user.user.profile;
-  next()
+  if (user.ok) {
+    // ユーザ情報を追加
+    context.tz_offset = user.tz_offset;
+    context.bio = user.user
+    context.user = user.user.profile;
+    next()
+  } else {
+    logger.error(`Failed to get detailed user info for an incoming message ${user.error}`);
+  }
 }
 
-const getChannelInfo = async ({ message, context, next }) => {
-  const channelInfo = await app.client.channels.info({
-    token: process.env.SLACK_BOT_TOKEN,
+const getChannelInfo = async ({ client, message, context, next }) => {
+  const channelInfo = await client.channels.info({
     channel: message.channel
   })
-  // console.log({ channelInfo })
-  context.channel = channelInfo.channel
-  next()
+  if (channelInfo.ok) {
+    context.channel = channelInfo.channel
+    next()
+  } else {
+    logger.error(`Failed to get detailed user info for an incoming message ${channelInfo.error}`);
+  }
 }
 
-const getFileInfo = async ({ message }) => {
+const getFileInfo = async ({ client, logger, message }) => {
   await message.files.forEach(async (file) => {
-    console.log({ file })
+    logger.info({ file })
     const fileBuffer = await new Promise((resolve, reject) => {
       request({
         method: 'get',
@@ -61,16 +65,15 @@ const getFileInfo = async ({ message }) => {
         if (error) {
           reject(error);
         } else {
-          console.log({ body })
+          logger.info({ body })
           resolve(body);
         }
       })
     });
-    await app.client.files.upload({
+    await client.files.upload({
       channels: process.env.CHANNEL_NAME,
       file: fileBuffer,
-      filename: file.name,
-      token: process.env.SLACK_BOT_TOKEN
+      filename: file.name
     });
   });
 };
@@ -81,7 +84,7 @@ app.use(noThreadMessages)
 app.use(getChannelInfo)
 app.use(addUsersInfoContext)
 
-app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
+app.message(addUsersInfoContext, /^(.*)/, async ({ client, logger, context, message }) => {
 
   let block = []
 
@@ -122,13 +125,9 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
   // 本文がある時のみmsg blockを格納
   if (message.text) block.push(msg)
 
-  console.log(`/////////`);
-  console.log(JSON.stringify(block));
-  console.log(`/////////`);
-  // console.log({ context })
+  console.log(`/////////\n${JSON.stringify(block)}\n/////////`);
   try {
-    await app.client.chat.postMessage({
-      token: process.env.SLACK_BOT_TOKEN,
+    const res = await client.chat.postMessage({
       channel: process.env.CHANNEL_NAME,
       text: message.text,
       unfurl_links: true,
@@ -138,16 +137,20 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ context, message }) => {
       unfurl_media: true,
       blocks: block
     });
-    console.log(`msg: ok ✅`);
+    if (res.ok) {
+      console.log(`msg: ok ✅`);
+    } else {
+      logger.error(`Failed to post a message (error: ${res.error})`);
+    }
 
     // ファイルがある場合は送信
     if (message.files) {
-      getFileInfo({ message })
-      console.log(`file: ok ✅`);
+      getFileInfo({ client, logger, message })
+      logger.info(`file: ok ✅`);
     }
   }
   catch (error) {
-    console.error(`no ${error}`);
+    logger.error(`no ${error}`);
   }
 });
 
