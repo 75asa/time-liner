@@ -14,7 +14,9 @@ const app = new App({
 });
 
 // To response only user w/o bot
-const notBotMessages = async ({ message, next }) => {
+const notBotMessages = async ({ logger, message, next }) => {
+  // console.log({ message })
+  logger.info({ message })
   if (!message.subtype || message.subtype !== 'bot_message') next();
 };
 
@@ -24,7 +26,6 @@ const noThreadMessages = async ({ message, next }) => {
 
 // To add posted user's profile to context
 const addUsersInfoContext = async ({ client, message, context, next }) => {
-  console.log({ message });
   const user = await client.users.info({
     user: message.user,
     include_locale: true
@@ -77,7 +78,6 @@ const getFileInfo = async ({ client, logger, message }) => {
     });
   });
 };
-
 
 app.use(notBotMessages)
 app.use(noThreadMessages)
