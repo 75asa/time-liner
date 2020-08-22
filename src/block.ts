@@ -1,80 +1,47 @@
-// typs
-type DealBlockParams = {
-  message: any;
-  context: any;
-};
+import {KnownBlock} from "@slack/types";
 
-type GetFileInfo = {
-  message: any;
-};
+export const dealBlock = async ({ message }): Promise<Array<KnownBlock>> => {
+// export const dealBlock = async ({ message }): Promise<KnownBlock> => {
+  let defaultTemplate: Array<KnownBlock> = []
+  const msg: KnownBlock = {
+    type: "section",
+    text: {
+      type: "mrkdwn",
+      text: message.text || ' '
+    },
+  };
+  if (message.subtype === "file_share" && message.files.length === 1) {
+    console.log(message.files);
+    const firstImage = message.files[0]
 
-type GetFileInfoTemplate = any;
+    msg.accessory =  {
+      type: "image",
+      image_url: firstImage.url_private,
+      alt_text: firstImage.name
+    };
+  }
+  defaultTemplate.push(msg);
 
-type GetFileInfoResult = Array<GetFileInfoTemplate>;
-//
-
-export const dealBlock = async ({ message, context }: DealBlockParams) => {
-  let defautTemplate = [
-    {
-      type: "context",
-      elements: [
-        {
+  if (message.subtype === "file_share" && message.files.length > 1) {
+    // const images: KnownBlock = await getImageBlocks({ message });
+    // const images = await getImageBlocks({ message });
+    message.files.forEach((image) => {
+      console.log({image})
+      defaultTemplate.push({
+        type: "section",
+        text: {
           type: "mrkdwn",
-          text: `#${context.channel.name}`
+          text: image.name
         },
-        {
-          type: "mrkdwn",
-          text: `*|*`
-        },
-        {
+        accessory: {
           type: "image",
-          image_url: context.user.image_original,
-          alt_text: context.user.display_name
-        },
-        {
-          type: "mrkdwn",
-          text: `*${context.user.display_name}*`
+          image_url: image.url_private,
+          alt_text: image.name
         }
-      ]
-    },
-    {
-      type: "divider"
-    },
-    {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: message.text
-      }
-    }
-  ];
-
-  if (message.subtype === "file_share") {
-    const files = await getFileInfo(message)
-    files.forEach(file => {
-      defautTemplate.push(file);
+      });
     });
   }
-  return defautTemplate;
+
+  return new Promise((resolve => resolve(defaultTemplate)));
 };
 
-export const getFileInfo = async ({ message }: GetFileInfo) => {
-  let result: GetFileInfoResult = [];
-  let template: GetFileInfoTemplate = {
-    type: "image",
-    title: {
-      type: "plain_text",
-      text: "sorry, image file not found",
-      image_url: "http://placekitten.com/500/500",
-      alt_text: "sorry, image file not found"
-    }
-  };
-  await message.files.forEach((element: any) => {
-    template.title.text = element.name;
-    template.title.image_url = element.thub_360;
-    template.title.alt_text = `file: ${element.name}`;
-    result.push(template);
-  });
-  console.log({ result });
-  return result;
-};

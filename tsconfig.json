@@ -3,8 +3,7 @@
         "target": "es6",
         "module": "commonjs",
         "lib": [
-          "es6",
-          "dom"
+            "ES2019"
         ],
         "outDir": "lib",
         "rootDir": "src",
@@ -13,7 +12,6 @@
         "noImplicitReturns": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "noImplicitAny": true,
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "sourceMap": true,
