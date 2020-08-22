@@ -35,6 +35,7 @@ const addUsersInfoContext = async ({ client, message, context, next }) => {
     context.tz_offset = user.tz_offset;
     context.bio = user.user
     context.user = user.user.profile;
+    console.log(context.user)
     next()
   } else {
     logger.error(`Failed to get detailed user info for an incoming message ${user.error}`);
@@ -126,17 +127,21 @@ app.message(addUsersInfoContext, /^(.*)/, async ({ client, logger, context, mess
   if (message.text) block.push(msg)
 
   console.log(`/////////\n${JSON.stringify(block)}\n/////////`);
+  const option =  {
+    channel: process.env.CHANNEL_NAME,
+    text: message.text,
+    unfurl_links: true,
+    link_names: true,
+    icon_url: context.user.image_original,
+    unfurl_media: true,
+    username: context.user.display_name || context.user.real_name,
+    blocks: block
+  }
+
+  console.log({option})
+
   try {
-    const res = await client.chat.postMessage({
-      channel: process.env.CHANNEL_NAME,
-      text: message.text,
-      unfurl_links: true,
-      link_names: true,
-      as_user: true,
-      link_names: true,
-      unfurl_media: true,
-      blocks: block
-    });
+    const res = await client.chat.postMessage(option);
     if (res.ok) {
       console.log(`msg: ok ✅`);
     } else {
