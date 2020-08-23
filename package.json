@@ -6,7 +6,7 @@
     "node": "12.x"
   },
   "description": "",
-  "main": "app.ts",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch './src/*.ts' --exec 'ts-node' src/index.ts --trace-warnings",
