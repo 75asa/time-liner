@@ -15,6 +15,7 @@
     - users.profile:read
     - users:read
     - users:read:email
+    - eam:read
   - user
     - chat:write
     - links:read

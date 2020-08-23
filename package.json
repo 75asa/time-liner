@@ -1,25 +1,44 @@
 {
   "name": "time-liner",
   "version": "1.0.0",
+  "engines": {
+    "node": "12.x"
+  },
   "description": "",
-  "main": "app.js",
+  "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "./node_modules/.bin/nodemon app.js",
+    "dev": "nodemon --watch './src/*.ts' --exec 'ts-node' src/index.ts --trace-warnings",
+    "build": "tsc -p .",
+    "start": "npm run build && node lib/index.js",
+    "local": "npm run build:live",
+    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "deploy": "git push origin HEAD && git push heroku master",
-    "ngrok": "ngrok http 3333"
+    "ngrok": "ngrok http 3333",
+    "format": "prettier --write './src/**/*.{ts,js}'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "@types/eslint": "^7.2.1",
+    "@types/node": "^14.6.0",
+    "@types/request": "^2.48.5",
+    "@typescript-eslint/eslint-plugin": "^3.9.1",
+    "@typescript-eslint/parser": "^3.9.1",
+    "eslint": "^7.7.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2"
   },
   "dependencies": {
-    "@slack/bolt": "^2.0",
-    "axios": "^0.19.2",
+    "@slack/bolt": "^2.3.0",
+    "axios": "^0.20.0",
     "dotenv": "^8.2.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.20",
     "request": "^2.88.2"
   }
 }
