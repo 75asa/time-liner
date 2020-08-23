@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch './src/*.ts' --exec 'ts-node' src/index.ts --trace-warnings",
-    "build": "tsc -p .",
+    "build": "npx tsc -p .",
     "start": "npm run build && node lib/index.js",
     "local": "npm run build:live",
     "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@slack/bolt": "^2.3.0",
-    "axios": "^0.20.0",
+    "axios": "0.19.1",
     "dotenv": "^8.2.0",
     "lodash": "^4.17.20",
     "request": "^2.88.2"
