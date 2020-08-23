@@ -15,7 +15,6 @@ export const dealBlock = async ({
   };
 
   const files = message.files;
-  console.log({files});
 
   let defaultTemplate: Array<KnownBlock> = [];
   const msg: KnownBlock = {
@@ -25,7 +24,6 @@ export const dealBlock = async ({
       text: message.text || " ",
     },
   };
-  console.log({message});
   if (
     message.subtype === "file_share" &&
     message.files.length === 1 &&
@@ -84,6 +82,7 @@ export const dealBlock = async ({
       });
     });
   }
+  console.log(JSON.stringify(defaultTemplate))
 
   return new Promise(resolve => resolve(defaultTemplate));
 };
