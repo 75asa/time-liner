@@ -40,6 +40,8 @@ app.message(
       blocks: await blocKit.dealBlock({ context, message }),
     };
 
+    console.log({msgOption})
+
     await app.client.chat
       .postMessage(msgOption)
       .then(res => {
