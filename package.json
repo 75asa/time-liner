@@ -11,12 +11,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch './src/*.ts' --exec 'ts-node' src/index.ts --trace-warnings",
     "build": "./node_modules/.bin/tsc -p .",
-    "start": "npm run build && node lib/index.js",
+    "start": "node lib/index.js",
     "local": "npm run build:live",
     "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "deploy": "git push origin HEAD && git push heroku master",
     "ngrok": "ngrok http 3333",
-    "format": "prettier --write './src/**/*.{ts,js}'"
+    "format": "prettier --write './src/**/*.{ts,js}'",
+    "postinstall": "npm run build"
   },
   "keywords": [],
   "author": "",
