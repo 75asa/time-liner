@@ -7,9 +7,9 @@
         ],
         "outDir": "lib",
         "rootDir": "src",
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
+//        "noUnusedLocals": true,
+//        "noUnusedParameters": true,
+//        "noImplicitReturns": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "moduleResolution": "node",
@@ -23,6 +23,7 @@
             ]
         }
     },
+    "compileOnSave": true,
     "include": [
         "src/**/*"
     ]
