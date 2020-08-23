@@ -2,6 +2,7 @@
   "name": "time-liner",
   "version": "1.0.0",
   "engines": {
+    "yarn": "1.*",
     "node": "12.x"
   },
   "description": "",
@@ -9,7 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch './src/*.ts' --exec 'ts-node' src/index.ts --trace-warnings",
-    "build": "npx tsc -p .",
+    "build": "tsc -p .",
     "start": "npm run build && node lib/index.js",
     "local": "npm run build:live",
     "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
