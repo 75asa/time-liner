@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export const notBotMessages: any = async ({ message, next }) => {
+  console.log({ message })
   if (!message.subtype || message.subtype !== "bot_message") await next();
 };
 
@@ -53,10 +54,12 @@ export const getFileInfo: any = async ({ context, next, message }) => {
     return new Promise((resolve, reject) => {
       axios
         .get(file.url_private_download, {
-          headers: { Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}` },
+            headers: { Authorization: `Bearer ${context.botToken}`},
+            responseType: 'arraybuffer',
         })
         .then(res => {
           if (res.status === 200) {
+            console.log({res});
             resolve(res.data);
           }
         })
@@ -72,11 +75,10 @@ export const getFileInfo: any = async ({ context, next, message }) => {
       resolve({
         token: context.botToken,
         channels: process.env.CHANNEL_NAME,
-        file: getDownloadFile(file),
         filename: file.name,
         filetype: file.filetype,
         title: file.title || " ",
-        content: file.preview,
+        content: getDownloadFile(file),
       });
     });
   };
