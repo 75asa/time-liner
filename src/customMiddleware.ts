@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const notBotMessages: any = async ({ message, next }) => {
-  console.log({message})
+  console.log({ message })
   if (!message.subtype || message.subtype !== "bot_message") await next();
 };
 

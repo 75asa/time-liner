@@ -49,6 +49,7 @@ app.message(
       })
       .catch(err => {
         console.error({ err });
+        console.log(err.data.response_metadata);
       });
     // console.log({ context });
     if (context.files) {
