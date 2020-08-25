@@ -2,7 +2,9 @@ import axios from "axios";
 
 export const notBotMessages: any = async ({ message, next }) => {
   console.log({ message })
-  if (!message.subtype || message.subtype !== "bot_message") await next();
+  const isExistSubtype = message.subtype && message.subtype === "bot_message";
+  const isExistBotID = "bot_id" in message;
+  if (!isExistSubtype && !isExistBotID) await next();
 };
 
 export const noThreadMessages: any = async ({ message, next }) => {
