@@ -1,25 +1,28 @@
-import axios from "axios";
-
 export const notBotMessages: any = async ({ message, next }) => {
-  console.log({ message })
+  console.log({ message });
   const isExistSubtype = message.subtype && message.subtype === "bot_message";
   const isExistBotID = "bot_id" in message;
-  if (!isExistSubtype && !isExistBotID) await next();
+  if (!isExistSubtype && !isExistBotID && !message.hidden) await next();
 };
 
 export const noThreadMessages: any = async ({ message, next }) => {
   if (!message.thread_ts) await next();
 };
 
+// export const noTimeline: any = async ({ message, next }) => {
+//   // channel ID でTLに投稿されたのは無視する
+//   if (!message.thread_ts) await next();
+// };
+
 export const getTeamInfo: any = async ({ client, context, next }) => {
   await client.team
     .info()
-    .then(team => {
+    .then((team) => {
       if (team.ok) {
         context.team = team.team;
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.log({ err });
     });
   await next();
@@ -37,14 +40,14 @@ export const addUsersInfoContext: any = async ({
       user: message.user,
       include_locale: true,
     })
-    .then(u => {
+    .then((u) => {
       if (u.ok) {
         context.tz_offset = u.user.tz_offset;
         context.user = u.user;
         context.profile = u.user.profile;
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.log({ err });
     });
 
@@ -52,57 +55,26 @@ export const addUsersInfoContext: any = async ({
 };
 
 export const getFileInfo: any = async ({ context, next, message }) => {
-  const getDownloadFile: any = async file => {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(file.url_private_download, {
-            headers: { Authorization: `Bearer ${context.botToken}`},
-            responseType: 'arraybuffer',
-        })
-        .then(res => {
-          if (res.status === 200) {
-            console.log({res});
-            resolve(res.data);
-          }
-        })
-        .catch(err => {
-          reject(err);
-        });
-    });
-  };
-  const addFileToContext = async file => {
-    // return new Promise(async (resolve, reject) => {
-    return new Promise(async resolve => {
-      // const fileOption: FilesUploadArguments = {
-      resolve({
-        token: context.botToken,
-        channels: process.env.CHANNEL_NAME,
-        filename: file.name,
-        filetype: file.filetype,
-        title: file.title || " ",
-        content: getDownloadFile(file),
-      });
-    });
-  };
-
   if (message.files) {
-    const uploadFiles = await message.files.reduce(async (acc, file) => {
-      console.log({ file });
-      if (file.mode === "hosted") return acc;
-      const result = await addFileToContext(file);
-      acc.push(result);
-      return acc;
-    }, []);
-    // 画像データ以外のfileに限定
-    await Promise.all(uploadFiles)
-      .then(result => {
-        context.files = result;
-      })
-      .catch(err => {
-        console.log({ err });
-      });
+    context.files = await message.files.reduce(
+      (acc, file, idx) => {
+        console.log({ idx, file });
+        // 投稿画像などは hosted にそれ以外(e.g. snippet, POST, external files)は files に
+        if (file.mode === "hosted") {
+          console.log({ acc });
+          acc.hosted.push(file);
+        } else {
+          acc.files.push(file);
+        }
+        console.log(JSON.stringify(acc, null, 4));
+        return acc;
+      },
+      {
+        hosted: [],
+        files: [],
+      }
+    );
   }
-
   await next();
 };
 
@@ -116,16 +88,16 @@ export const getChannelInfo: any = async ({
     .info({
       channel: message.channel,
     })
-    .then(channel => {
+    .then((channel) => {
       context.channel = channel.channel;
     })
-    .catch(err => {
+    .catch((err) => {
       console.log({ err });
     });
   await next();
 };
 
-export const enableAll: any = async app => {
+export const enableAll: any = async (app) => {
   if (process.env.SLACK_REQUEST_LOG_ENABLED === "1") {
     app.use(async (args: any) => {
       const copiedArgs = JSON.parse(JSON.stringify(args));
