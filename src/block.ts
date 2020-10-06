@@ -10,33 +10,8 @@ export const dealBlock = async ({
   context,
   message,
 }): Promise<Array<KnownBlock>> => {
-  const divider: KnownBlock = {
-    type: "divider",
-  };
+  const defaultTemplate: Array<KnownBlock> = [];
 
-  const files = message.files;
-
-  let defaultTemplate: Array<KnownBlock> = [];
-  const msg: KnownBlock = {
-    type: "section",
-    text: {
-      type: "mrkdwn",
-      text: message.text || " ",
-    },
-  };
-  if (
-    message.subtype === "file_share" &&
-    message.files.length === 1 &&
-    message.files[0].mode === "hosted"
-  ) {
-    const firstImage = message.files[0];
-
-    msg.accessory = {
-      type: "image",
-      image_url: firstImage.url_private,
-      alt_text: firstImage.name,
-    };
-  }
   const header: KnownBlock = {
     type: "context",
     elements: [
@@ -50,24 +25,41 @@ export const dealBlock = async ({
       },
       {
         type: "mrkdwn",
-        text: `*${getPostedURL({
-          context,
-          message,
-        })}*`,
+        text: `*${getPostedURL({ context, message })}*`,
       },
     ],
   };
+
+  const divider: KnownBlock = {
+    type: "divider",
+  };
+
+  const msg: KnownBlock = {
+    type: "section",
+    text: {
+      type: "mrkdwn",
+      text: message.text || " ",
+    },
+  };
+
+  // 投稿された画像が一枚だけの場合はメッセージと画像をつなげて block にする
+  if (context.files && context.files.hosted.length === 1) {
+    const firstImage = message.files[0];
+
+    msg.accessory = {
+      type: "image",
+      image_url: firstImage.url_private,
+      alt_text: firstImage.name,
+    };
+  }
 
   defaultTemplate.push(header);
   defaultTemplate.push(divider);
   defaultTemplate.push(msg);
 
-  if (
-    message.subtype === "file_share" &&
-    message.files.length > 1 &&
-    message.files.some(file => { return file.mode === "hosted" })
-  ) {
-    message.files.forEach(image => {
+  // 複数の画像がある場合 blocks の images で投稿
+  if (context.files && context.files.hosted.length > 1) {
+    message.files.forEach((image) => {
       defaultTemplate.push({
         type: "section",
         text: {
@@ -82,7 +74,10 @@ export const dealBlock = async ({
       });
     });
   }
-  console.log(JSON.stringify(defaultTemplate))
 
-  return new Promise(resolve => resolve(defaultTemplate));
+  // console.log('blocks', JSON.stringify(defaultTemplate, null, 4));
+  // console.log({defaultTemplate})
+  // console.log(JSON.stringify(msg, null, 4))
+
+  return new Promise((resolve) => resolve(defaultTemplate));
 };
