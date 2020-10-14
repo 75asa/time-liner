@@ -1,0 +1,7 @@
+blank_issues_enabled: true
+    - name: Bug Report
+      about: Create a report of the issue you've encountered.
+      url: https://github.com/75asa/time-liner/issues/new?template=bug_report.md&projects=75asa%2Ftime-liner%2F4&labels=%3Aant%3A%20bug
+    - name: Feature Request
+      about: Suggest an idea for this project
+      url: https://github.com/75asa/time-liner/issues/new?template=feature_request.md&projects=75asa%2Ftime-liner%2F2
