@@ -3,6 +3,8 @@ import { ChatPostMessageArguments } from "@slack/web-api";
 import dotenv from "dotenv";
 import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
+import * as reaction from "./reaction";
+import { ReactionEvent } from "./types/reaction";
 
 dotenv.config();
 
@@ -93,6 +95,71 @@ app.message(
     }
   }
 );
+
+// -----------------------------
+// reaction added
+// -----------------------------
+app.event("reaction_added", async ({ body, client }) => {
+  const event = body.event as ReactionEvent;
+
+  console.log({ event });
+  if (event.item["type"] !== "message") {
+    return;
+  }
+  const channel = event.item["channel"];
+  const timestamp = event.item["ts"];
+  // TL => Users'Post は ts だけでいい
+  //   => めんどいから こっちも ts, channel で統一したがいいかも？
+  // Users'Post => TL は ts, channel がいる
+
+  // TODO: DBできたらここを差し替え
+
+  // const bindedPost = mongo.get(timestamp, channel)
+  // const emoji = reaction.get(event);
+
+  // // TODO: #30 image
+  // const options = {
+  //   name: emoji,
+  //   // 紐づくもう一つの channel, ts
+  //   channel: bindedPost.channel,
+  //   timestamp: bindedPost.timestamp
+  // }
+  // client.reactions.add(options).then(result => {
+  //   console.log({result})
+  // });
+});
+
+// -----------------------------
+// reaction deleted
+// -----------------------------
+app.event("reaction_removed", async ({ body, client }) => {
+  const event = body.event as ReactionEvent;
+
+  if (event.item["type"] !== "message") {
+    return;
+  }
+  const channel = event.item["channel"];
+  const timestamp = event.item["ts"];
+  // TL => Users'Post は ts だけでいい
+  //   => めんどいから こっちも ts, channel で統一したがいいかも？
+  // Users'Post => TL は ts, channel がいる
+
+  // TODO: DBできたらここを差し替え
+
+  // const bindedPost = mongo.get(timestamp, channel)
+  // const emoji = reaction.get(event);
+
+  // // TODO: #30 image
+  // const options = {
+  //   name: emoji,
+  //   // 紐づくもう一つの channel, ts
+  //   channel: bindedPost.channel,
+  //   timestamp: bindedPost.timestamp
+  // }
+  // client.reactions.remove(options).then(result => {
+  //   console.log({result})
+  // });
+});
 
 (async () => {
   // Start your app

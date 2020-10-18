@@ -1,11 +1,14 @@
 export const notBotMessages: any = async ({ message, next }) => {
   console.log({ message });
+  // emoji event
+  if (!message) await next();
   const isExistSubtype = message.subtype && message.subtype === "bot_message";
   const isExistBotID = "bot_id" in message;
   if (!isExistSubtype && !isExistBotID && !message.hidden) await next();
 };
 
 export const noThreadMessages: any = async ({ message, next }) => {
+  if (!message) await next();
   if (!message.thread_ts) await next();
 };
 
@@ -35,6 +38,8 @@ export const addUsersInfoContext: any = async ({
   context,
   next,
 }) => {
+  // emoji events
+  if (!message) await next();
   await client.users
     .info({
       user: message.user,
@@ -55,6 +60,8 @@ export const addUsersInfoContext: any = async ({
 };
 
 export const getFileInfo: any = async ({ context, next, message }) => {
+  // emoji events
+  if (!message) await next();
   if (message.files) {
     context.files = await message.files.reduce(
       (acc, file, idx) => {
@@ -79,6 +86,7 @@ export const getFileInfo: any = async ({ context, next, message }) => {
 };
 
 export const getChannelInfo: any = async ({
+  event,
   client,
   message,
   context,
@@ -86,7 +94,7 @@ export const getChannelInfo: any = async ({
 }) => {
   await client.conversations
     .info({
-      channel: message.channel,
+      channel: message ? message.channel : event.item.channel,
     })
     .then((channel) => {
       context.channel = channel.channel;
