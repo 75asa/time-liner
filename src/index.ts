@@ -3,6 +3,7 @@ import { ChatPostMessageArguments } from "@slack/web-api";
 import dotenv from "dotenv";
 import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
+import { createConnection } from "typeorm";
 
 dotenv.config();
 
@@ -16,6 +17,11 @@ const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
+
+(async () => {
+  const connection = await createConnection();
+  await connection.synchronize();
+})();
 
 // custom middleware's
 app.use(middleware.notBotMessages);
