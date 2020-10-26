@@ -2,11 +2,12 @@
   "type": "mongodb",
   "host": "localhost",
   "port": 27017,
-  "database": "test",
+  "database": "sample",
+  "useUnifiedTopology": true,
   "synchronize": true,
   "logging": false,
   "entities": [
-    "src/entity/**/*.ts"
+    "src/entity/*.ts"
   ],
   "migrations": [
     "src/migration/**/*.ts"
