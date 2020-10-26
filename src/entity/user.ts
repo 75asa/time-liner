@@ -1,27 +1,45 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { UsersPostEntity } from './UsersPost';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Index,
+} from "typeorm";
+import { UsersPostEntity } from "./UsersPost";
 
 @Entity("users")
+@Index(["id"], { unique: true })
 export class UserEntity {
   @PrimaryGeneratedColumn()
-  id: Number;
+  id: number;
 
-  @Column()
-  realName: String;
+  @Column({
+    type: "varchar",
 
-  @Column()
-  displayName: String;
+    length: 25,
+  })
+  realName: string;
 
-  @Column()
-  slackId: String;
+  @Column({
+    type: "varchar",
+    length: 25,
+  })
+  displayName: string;
 
-  @Column()
-  channelId: String;
+  @Column({
+    type: "varchar",
+    length: 10,
+  })
+  slackId: string;
 
-  @OneToMany(
-    () => UsersPostEntity,
-    (usersPost) => usersPost.user,
-    { eager: true }
-  )
+  @Column({
+    type: "varchar",
+    length: 10,
+  })
+  channelId: string;
+
+  @OneToMany(() => UsersPostEntity, (usersPost) => usersPost.user, {
+    eager: true,
+  })
   usersPost: UsersPostEntity[];
 }

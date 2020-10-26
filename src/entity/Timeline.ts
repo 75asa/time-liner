@@ -1,21 +1,39 @@
-import { KnownBlock } from '@slack/bolt';
-import { Entity, Column, Index, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
-import { UsersPostEntity } from './UsersPost';
+import { KnownBlock } from "@slack/bolt";
+import {
+  Entity,
+  Column,
+  Index,
+  ManyToOne,
+  JoinColumn,
+  PrimaryColumn,
+} from "typeorm";
+import { UsersPostEntity } from "./UsersPost";
 
 @Entity("timeline")
-@Index(["ts", "bindedChannelId"], { unique: true })
+@Index(["ts", "bindedChannelID"], { unique: true })
 export class TimelineEntity {
-  @Column()
-  ts: Number;
+  @PrimaryColumn({
+    type: "varchar",
+    length: 25,
+  })
+  ts: string;
 
-  @Column()
-  bindedChannelId: String;
+  @PrimaryColumn({
+    type: "varchar",
+    length: 10,
+  })
+  bindedChannelID: string;
 
-  @Column()
+  @Column({
+    type: "json",
+  })
   contents: KnownBlock[];
 
-  @Column()
-  usersPostTs: Number;
+  @Column({
+    type: "varchar",
+    length: 25,
+  })
+  usersPostTs: string;
 
   @ManyToOne(() => UsersPostEntity, { eager: false })
   @JoinColumn({ name: "usersPostTs" })
