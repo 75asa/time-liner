@@ -3,6 +3,7 @@ import { ChatPostMessageArguments } from "@slack/web-api";
 import dotenv from "dotenv";
 import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
+import { MessageEventParam } from "./bolt.interface";
 
 dotenv.config();
 
@@ -45,7 +46,7 @@ app.message(
     await app.client.chat
       .postMessage(msgOption)
       .then((res) => {
-        if (res.ok) console.log(`msg: ok ✅`);
+        if (res.ok) console.log("msg: ok ✅");
       })
       .catch((err) => {
         console.error({ err });
@@ -84,7 +85,7 @@ app.message(
       await app.client.chat
         .postMessage(msgOption)
         .then((res) => {
-          if (res.ok) console.log(`msg: ok ✅`);
+          if (res.ok) console.log("msg: ok ✅");
         })
         .catch((err) => {
           console.error({ err });
