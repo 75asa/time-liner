@@ -1,13 +1,13 @@
-# Time Liner
+# time-liner
 
 ## 概要
 
-- 指定の slack チャンネルを別のチャンネルに転送してくれる slackApp
+- 指定の slack チャンネルを別のチャンネルに転送してくれる SlackApp
 
 ## 導入
 
 - git clone
-- [slack api](https://api.slack.com/apps)から slackApp を作る
+- [slack api](https://api.slack.com/apps) から slackApp を作る
 - 以下のスコープを OAuth & Permissions より選択
   - bot
     - channels:history
@@ -25,7 +25,7 @@
     - links:read
     - links:write
     - files:write
-- `cp .env.example .env`
+- `$cp .env.example .env`
   - .env 項目
     - `SLACK_WORKSPACE`に slack のワークスペース名
     - `CHANNEL_NAME`に転送先の slack チャンネル名
@@ -36,7 +36,7 @@
       - `OAuth Access Token`を`SLACK_OAUTH_TOKEN`
       - `Bot User OAuth Access Token`を`SLACK_SIGNING_SECRET`
 - ローカルで以下を実施
-  - `$ yarn` | `npm i`
+  - `$ yarn` | `$ npm i`
   - `ngrok`を Homebrew でインストール（入ってない方のみ）
   - `$ ngrok http ${n}` でポート番号指定して ngrok を立ち上げる
   - CLI に出てきた URL を slackApp の InteractiveComponents に貼り付け
@@ -77,7 +77,7 @@
 ```
 
 任意の位置にブレークポイントを設定後、デバッガから`Attach to Bolt`を実行。  
-`npm run dev:watch`で本アプリをデバッグ実行。
+`$npm run dev:watch`で本アプリをデバッグ実行。
 
 ## ビルド
 
