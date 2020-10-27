@@ -45,7 +45,7 @@ app.message(
     await app.client.chat
       .postMessage(msgOption)
       .then((res) => {
-        if (res.ok) console.log(`msg: ok ✅`);
+        if (res.ok) console.log("msg: ok ✅");
       })
       .catch((err) => {
         console.error({ err });
@@ -84,7 +84,7 @@ app.message(
       await app.client.chat
         .postMessage(msgOption)
         .then((res) => {
-          if (res.ok) console.log(`msg: ok ✅`);
+          if (res.ok) console.log("msg: ok ✅");
         })
         .catch((err) => {
           console.error({ err });
