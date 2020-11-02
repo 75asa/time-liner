@@ -1,7 +1,7 @@
 import { KnownBlock } from "@slack/types";
 import { MessageEventParam } from "./bolt.interface";
 
-const getPostedURL = ({ context, message }): string => {
+const getPostedURL = ({ context, message }: MessageEventParam): string => {
   return `<https://${context.team.name}.slack.com/archives/${
     message.channel
   }/p${message.ts.replace(".", "")}|詳しくみる>`;
