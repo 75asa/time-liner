@@ -1,21 +1,14 @@
-import {
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  Index,
-} from "typeorm";
+import { ObjectID } from "mongodb";
+import { Column, Entity, ObjectIdColumn, OneToMany, BaseEntity } from "typeorm";
 import { UsersPostEntity } from "./UsersPost";
 
 @Entity("users")
-@Index(["id"], { unique: true })
-export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class UserEntity extends BaseEntity {
+  @ObjectIdColumn()
+  id: ObjectID;
 
   @Column({
     type: "varchar",
-
     length: 25,
   })
   realName: string;
@@ -30,13 +23,13 @@ export class UserEntity {
     type: "varchar",
     length: 10,
   })
-  slackId: string;
+  slackID: string;
 
   @Column({
     type: "varchar",
     length: 10,
   })
-  channelId: string;
+  channelID: string;
 
   @OneToMany(() => UsersPostEntity, (usersPost) => usersPost.user, {
     eager: true,

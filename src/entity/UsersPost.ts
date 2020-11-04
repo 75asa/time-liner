@@ -1,29 +1,33 @@
 import { KnownBlock } from "@slack/bolt";
 import {
   Entity,
-  Index,
   Column,
   JoinColumn,
   ManyToOne,
   OneToMany,
-  PrimaryColumn,
+  ObjectIdColumn,
+  BaseEntity,
 } from "typeorm";
 import { UserEntity } from "./User";
 import { TimelineEntity } from "./Timeline";
+import { ObjectID, ObjectId } from "mongodb";
 
 @Entity("users_posts")
-@Index(["ts", "channelId"], { unique: true })
-export class UsersPostEntity {
-  @PrimaryColumn({
-    type: "float",
+export class UsersPostEntity extends BaseEntity {
+  @ObjectIdColumn()
+  id: ObjectId;
+
+  @Column({
+    type: "varchar",
+    length: 25,
   })
   ts: number;
 
-  @PrimaryColumn({
+  @Column({
     type: "varchar",
     length: 10,
   })
-  channelId: string;
+  channelID: string;
 
   @Column({
     type: "json",
@@ -31,15 +35,15 @@ export class UsersPostEntity {
   content: KnownBlock;
 
   @Column({
-    type: "integer",
+    type: "string",
   })
-  userId: number;
+  userId: ObjectID;
 
   @ManyToOne(() => UserEntity, { eager: false })
   @JoinColumn({ name: "userId" })
   user: UserEntity;
 
-  @OneToMany(() => TimelineEntity, (timeline) => timeline.usersPostTs, {
+  @OneToMany(() => TimelineEntity, (timeline) => timeline.usersPostId, {
     eager: true,
   })
   timelines: TimelineEntity[];

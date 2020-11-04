@@ -1,24 +1,27 @@
 import { KnownBlock } from "@slack/bolt";
+import { ObjectID } from "mongodb";
 import {
   Entity,
   Column,
-  Index,
   ManyToOne,
   JoinColumn,
-  PrimaryColumn,
+  ObjectIdColumn,
+  BaseEntity,
 } from "typeorm";
 import { UsersPostEntity } from "./UsersPost";
 
 @Entity("timeline")
-@Index(["ts", "bindedChannelID"], { unique: true })
-export class TimelineEntity {
-  @PrimaryColumn({
+export class TimelineEntity extends BaseEntity {
+  @ObjectIdColumn()
+  id: ObjectID;
+
+  @Column({
     type: "varchar",
     length: 25,
   })
   ts: string;
 
-  @PrimaryColumn({
+  @Column({
     type: "varchar",
     length: 10,
   })
@@ -30,12 +33,11 @@ export class TimelineEntity {
   contents: KnownBlock[];
 
   @Column({
-    type: "varchar",
-    length: 25,
+    type: "string",
   })
-  usersPostTs: string;
+  usersPostId: ObjectID;
 
   @ManyToOne(() => UsersPostEntity, { eager: false })
-  @JoinColumn({ name: "usersPostTs" })
+  @JoinColumn({ name: "usersPostId" })
   usersPosts: UsersPostEntity;
 }
