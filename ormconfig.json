@@ -1,0 +1,22 @@
+{
+  "useUnifiedTopology": true,
+  "type": "mongodb",
+  "host": "localhost",
+  "database": "sample",
+  "synchronize": true,
+  "logging": false,
+  "entities": [
+    "lib/entity/*.{js, ts}"
+  ],
+  "subscribers": [
+    "lib/subscriber/*.js"
+  ],
+  "migrations": [
+    "lib/migration/*.js"
+  ],
+  "cli": {
+    "entitiesDir": "lib/entity",
+    "migrationsDir": "lib/migration",
+    "subscribersDir": "lib/subscriber"
+  }
+}
