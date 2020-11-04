@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
 import { createConnection } from "typeorm";
+import { UserEntity } from "./entity/User";
 
 dotenv.config();
 
@@ -17,11 +18,6 @@ const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
-
-(async () => {
-  const connection = await createConnection();
-  await connection.synchronize();
-})();
 
 // custom middleware's
 app.use(middleware.notBotMessages);
@@ -48,10 +44,17 @@ app.message(
 
     console.log("1回目", JSON.stringify(msgOption, null, 4));
 
+    const user = new UserEntity();
+    user.realName = context.profile.real_name;
+    user.displayName = context.profile.display_name;
+    user.slackID = context.channel.creator;
+    user.channelID = context.channel.id;
+    await user.save();
+
     await app.client.chat
       .postMessage(msgOption)
       .then((res) => {
-        if (res.ok) console.log(`msg: ok ✅`);
+        if (res.ok) console.log("msg: ok ✅");
       })
       .catch((err) => {
         console.error({ err });
@@ -90,7 +93,7 @@ app.message(
       await app.client.chat
         .postMessage(msgOption)
         .then((res) => {
-          if (res.ok) console.log(`msg: ok ✅`);
+          if (res.ok) console.log("msg: ok ✅");
         })
         .catch((err) => {
           console.error({ err });
@@ -101,6 +104,8 @@ app.message(
 );
 
 (async () => {
+  await createConnection();
+
   // Start your app
   await app.start(process.env.PORT || 3000);
 
