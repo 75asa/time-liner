@@ -35,9 +35,9 @@ export class TimelineEntity extends BaseEntity {
   @Column({
     type: "string",
   })
-  usersPostId: ObjectID;
+  usersPostID: ObjectID;
 
   @ManyToOne(() => UsersPostEntity, { eager: false })
-  @JoinColumn({ name: "usersPostId" })
+  @JoinColumn({ name: "usersPostID" })
   usersPosts: UsersPostEntity;
 }

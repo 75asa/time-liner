@@ -43,7 +43,7 @@ export class UsersPostEntity extends BaseEntity {
   @JoinColumn({ name: "userId" })
   user: UserEntity;
 
-  @OneToMany(() => TimelineEntity, (timeline) => timeline.usersPostId, {
+  @OneToMany(() => TimelineEntity, (timeline) => timeline.usersPostID, {
     eager: true,
   })
   timelines: TimelineEntity[];
