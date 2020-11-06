@@ -2,7 +2,7 @@
   "useUnifiedTopology": true,
   "type": "mongodb",
   "host": "localhost",
-  "database": "sample",
+  "database": "tl-poilice-man",
   "synchronize": true,
   "logging": false,
   "entities": [
