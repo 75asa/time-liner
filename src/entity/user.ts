@@ -25,6 +25,12 @@ export class UserEntity extends BaseEntity {
   })
   slackID: string;
 
+  @Column({
+    type: "varchar",
+    length: 10,
+  })
+  channelID: string;
+
   @OneToMany(() => UsersPostEntity, (usersPost) => usersPost.user, {
     eager: true,
   })

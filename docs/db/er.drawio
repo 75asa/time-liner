@@ -1,6 +1,6 @@
-<mxfile host="65bd71144e" modified="2020-10-19T03:17:42.600Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.50.1 Chrome/83.0.4103.122 Electron/9.2.1 Safari/537.36" etag="ETwy5E0GUhCqC5NDRnwa" version="13.6.5">
+<mxfile host="65bd71144e" modified="2020-11-06T08:01:19.001Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.50.1 Chrome/83.0.4103.122 Electron/9.2.1 Safari/537.36" etag="PjoZXN1XkRuhGhjmchjR" version="13.6.5">
     <diagram id="VrcVR6ULvvSCe7n3P_Np" name="ページ1">
-        <mxGraphModel dx="1378" dy="785" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+        <mxGraphModel dx="1440" dy="660" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -56,13 +56,13 @@
                     <mxGeometry x="60" width="120" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="149" value="" style="group" parent="1" connectable="0" vertex="1">
-                    <mxGeometry x="405" y="220" width="180" height="170" as="geometry"/>
+                    <mxGeometry x="405" y="220" width="180" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="160" value="" style="group" parent="149" connectable="0" vertex="1">
-                    <mxGeometry width="180" height="170" as="geometry"/>
+                    <mxGeometry width="180" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="85" value="Users Posts" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;" parent="160" vertex="1">
-                    <mxGeometry width="180" height="170" as="geometry"/>
+                    <mxGeometry width="180" height="135" as="geometry"/>
                 </mxCell>
                 <mxCell id="86" value="" style="shape=partialRectangle;collapsible=0;dropTarget=0;pointerEvents=0;fillColor=none;top=0;left=0;bottom=0;right=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="85" vertex="1">
                     <mxGeometry y="30" width="180" height="35" as="geometry"/>
@@ -73,17 +73,8 @@
                 <mxCell id="88" value="ts" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;fontStyle=5;overflow=hidden;" parent="86" vertex="1">
                     <mxGeometry x="60" width="120" height="35" as="geometry"/>
                 </mxCell>
-                <mxCell id="89" value="" style="shape=partialRectangle;collapsible=0;dropTarget=0;pointerEvents=0;fillColor=none;top=0;left=0;bottom=1;right=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="85" vertex="1">
-                    <mxGeometry y="65" width="180" height="35" as="geometry"/>
-                </mxCell>
-                <mxCell id="90" value="" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;fontStyle=1;overflow=hidden;" parent="89" vertex="1">
-                    <mxGeometry width="60" height="35" as="geometry"/>
-                </mxCell>
-                <mxCell id="91" value="channel_id" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;fontStyle=5;overflow=hidden;" parent="89" vertex="1">
-                    <mxGeometry x="60" width="120" height="35" as="geometry"/>
-                </mxCell>
                 <mxCell id="92" value="" style="shape=partialRectangle;collapsible=0;dropTarget=0;pointerEvents=0;fillColor=none;top=0;left=0;bottom=0;right=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="85" vertex="1">
-                    <mxGeometry y="100" width="180" height="30" as="geometry"/>
+                    <mxGeometry y="65" width="180" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="93" value="FK" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;" parent="92" vertex="1">
                     <mxGeometry width="60" height="30" as="geometry"/>
@@ -92,7 +83,7 @@
                     <mxGeometry x="60" width="120" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="95" value="" style="shape=partialRectangle;collapsible=0;dropTarget=0;pointerEvents=0;fillColor=none;top=0;left=0;bottom=0;right=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="85" vertex="1">
-                    <mxGeometry y="130" width="180" height="40" as="geometry"/>
+                    <mxGeometry y="95" width="180" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="96" value="" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;" parent="95" vertex="1">
                     <mxGeometry width="60" height="40" as="geometry"/>
@@ -101,7 +92,7 @@
                     <mxGeometry x="60" width="120" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="157" value="" style="line;strokeWidth=1;rotatable=0;dashed=0;labelPosition=right;align=left;verticalAlign=middle;spacingTop=0;spacingLeft=6;points=[];portConstraint=eastwest;" parent="160" vertex="1">
-                    <mxGeometry y="130" width="180" height="10" as="geometry"/>
+                    <mxGeometry y="61.17647058823528" width="180" height="4.705882352941176" as="geometry"/>
                 </mxCell>
                 <mxCell id="155" value="" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERoneToMany;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="162" target="92" edge="1">
                     <mxGeometry width="100" height="100" relative="1" as="geometry">

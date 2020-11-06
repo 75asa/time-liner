@@ -24,12 +24,6 @@ export class UsersPostEntity extends BaseEntity {
   ts: number;
 
   @Column({
-    type: "varchar",
-    length: 10,
-  })
-  channelID: string;
-
-  @Column({
     type: "json",
   })
   content: KnownBlock;
