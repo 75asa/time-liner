@@ -33,6 +33,12 @@ export class UsersPostEntity extends BaseEntity {
   })
   userId: ObjectID;
 
+  @Column({
+    type: "varchar",
+    length: 10,
+  })
+  channelID: string;
+
   @ManyToOne(() => UserEntity, { eager: false })
   @JoinColumn({ name: "userId" })
   user: UserEntity;
