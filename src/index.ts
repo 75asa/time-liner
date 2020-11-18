@@ -3,7 +3,7 @@ import { ChatPostMessageArguments } from "@slack/web-api";
 import dotenv from "dotenv";
 import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
-import { createConnection, MongoEntityManager, Connection } from 'typeorm';
+import { createConnection, MongoEntityManager, Connection } from "typeorm";
 import { UserEntity } from "./entity/User";
 
 dotenv.config();
@@ -52,8 +52,6 @@ app.message(
     // user.displayName = context.profile.display_name;
     // user.slackID = context.channel.creator;
 
-
-
     const user = {
       realName: context.profile.real_name,
       displayName: context.profile.display_name,
@@ -63,11 +61,11 @@ app.message(
       slackID: user.slackID,
     };
     await mongoEntityMgr
-      .findOneAndReplace('users', query, user, { upsert: true })
-      .then(res => {
+      .findOneAndReplace("users", query, user, { upsert: true })
+      .then((res) => {
         console.log({ res });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log({ err });
       });
 
@@ -130,7 +128,6 @@ app.event("member_joined_channel", async () => {
 (async () => {
   connection = await createConnection();
   mongoEntityMgr = new MongoEntityManager(connection);
-
 
   // Start your app
   await app.start(process.env.PORT || 3000);
