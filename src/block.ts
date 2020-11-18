@@ -21,7 +21,7 @@ export const dealBlock = async ({
       },
       {
         type: "mrkdwn",
-        text: `*|*`,
+        text: "*|*",
       },
       {
         type: "mrkdwn",
