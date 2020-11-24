@@ -2,7 +2,7 @@
   "useUnifiedTopology": true,
   "type": "mongodb",
   "host": "localhost",
-  "database": "tl-poilice-man",
+  "database": "TL-Police",
   "synchronize": true,
   "logging": false,
   "entities": [
