@@ -3,12 +3,17 @@ import { ChatPostMessageArguments } from "@slack/web-api";
 import dotenv from "dotenv";
 import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
+import { createConnection, MongoEntityManager, Connection } from "typeorm";
+import { UserEntity } from "./entity/User";
 
 dotenv.config();
 
 Object.keys(dotenv).forEach((key) => {
   process.env[key] = dotenv[key];
 });
+
+let connection: Connection;
+let mongoEntityMgr: MongoEntityManager;
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
@@ -41,6 +46,28 @@ app.message(
     };
 
     console.log("1回目", JSON.stringify(msgOption, null, 4));
+
+    // const user = new UserEntity();
+    // user.realName = context.profile.real_name;
+    // user.displayName = context.profile.display_name;
+    // user.slackID = context.channel.creator;
+
+    const user = {
+      realName: context.profile.real_name,
+      displayName: context.profile.display_name,
+      slackID: context.channel.creator,
+    };
+    const query = {
+      slackID: user.slackID,
+    };
+    await mongoEntityMgr
+      .findOneAndReplace("users", query, user, { upsert: true })
+      .then((res) => {
+        console.log({ res });
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
 
     await app.client.chat
       .postMessage(msgOption)
@@ -94,7 +121,14 @@ app.message(
   }
 );
 
+app.event("member_joined_channel", async () => {
+  console.log("hoge");
+});
+
 (async () => {
+  connection = await createConnection();
+  mongoEntityMgr = new MongoEntityManager(connection);
+
   // Start your app
   await app.start(process.env.PORT || 3000);
 
