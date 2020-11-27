@@ -87,6 +87,46 @@ app.message(middleware.getChannelInfo, async ({ client, context, message }) => {
         console.error({ err });
         console.log(err.data.response_metadata);
       });
+
+    console.log(JSON.stringify(context.files, null, 4));
+
+    if (context.files && context.files.files.length) {
+      // snippet, POST がある場合は blocks があると送信できないので本文投稿後に再度ファイルだけ投稿
+      // icon_url, usernameもpayloadに存在するとattachmentの展開がされないので削除
+      delete msgOption.blocks;
+      delete msgOption.icon_url;
+      delete msgOption.username;
+      await Promise.all(
+        context.files.files.map(async (file) => {
+          return await new Promise<string>((resolve, reject) => {
+            if (file.permalink) {
+              resolve(file.permalink);
+            } else {
+              reject("error");
+            }
+          });
+        })
+      )
+        .then(async (result) => {
+          // console.log({ result });
+          await result.forEach((value) => {
+            msgOption.text = value as string;
+          });
+        })
+        .catch((e) => {
+          console.log({ e });
+        });
+      console.log("2回目", JSON.stringify(msgOption, null, 4));
+      await app.client.chat
+        .postMessage(msgOption)
+        .then((res) => {
+          if (res.ok) console.log("msg: ok ✅");
+        })
+        .catch((err) => {
+          console.error({ err });
+          console.log(err.data.response_metadata);
+        });
+    }
   }
 });
 
