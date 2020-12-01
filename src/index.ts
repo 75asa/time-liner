@@ -46,11 +46,6 @@ app.message(
 
     console.log("1回目", JSON.stringify(msgOption, null, 4));
 
-    // const user = new UserEntity();
-    // user.realName = context.profile.real_name;
-    // user.displayName = context.profile.display_name;
-    // user.slackID = context.channel.creator;
-
     const findUserQuery = {
       realName: context.profile.real_name,
       displayName: context.profile.display_name,
