@@ -116,15 +116,12 @@ app.message(
           console.log({ e });
         });
       console.log("2回目", JSON.stringify(msgOption, null, 4));
-      await app.client.chat
-        .postMessage(msgOption)
-        .then((res) => {
-          if (res.ok) console.log("msg: ok ✅");
-        })
-        .catch((err) => {
-          console.error({ err });
-          console.log(err.data.response_metadata);
-        });
+      const res = await app.client.chat.postMessage(msgOption).catch((err) => {
+        console.error({ err });
+        console.log(err.data.response_metadata);
+        return { ok: false };
+      });
+      if (res.ok) console.log("msg: ok ✅");
     }
   }
 );
