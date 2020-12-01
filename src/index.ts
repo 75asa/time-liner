@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
 import { createConnection, MongoEntityManager, Connection } from "typeorm";
-import { UserEntity } from "./entity/User";
 
 dotenv.config();
 
@@ -52,22 +51,31 @@ app.message(
     // user.displayName = context.profile.display_name;
     // user.slackID = context.channel.creator;
 
-    const user = {
+    const findUser = {
       realName: context.profile.real_name,
       displayName: context.profile.display_name,
       slackID: context.channel.creator,
     };
-    const query = {
-      slackID: user.slackID,
+    const insertedUser = await mongoEntityMgr.findOneAndReplace(
+      "users",
+      { slackID: findUser.slackID },
+      findUser,
+      { upsert: true }
+    );
+
+    const findMessage = {
+      ts: message.ts,
+      content: message.text,
+      userId: insertedUser.value._id.generationTime,
+      channelId: message.channel,
     };
-    await mongoEntityMgr
-      .findOneAndReplace("users", query, user, { upsert: true })
-      .then((res) => {
-        console.log({ res });
-      })
-      .catch((err) => {
-        console.log({ err });
-      });
+    const insertedMessage = await mongoEntityMgr.findOneAndReplace(
+      "users_posts",
+      { ts: message.ts },
+      findMessage,
+      { upsert: true }
+    );
+    console.log(insertedMessage);
 
     await app.client.chat
       .postMessage(msgOption)
