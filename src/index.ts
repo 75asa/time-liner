@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
 import { createConnection, MongoEntityManager, Connection } from "typeorm";
+import { upsertUsers, FindUserQuery } from "./db/query";
 
 dotenv.config();
 
@@ -46,17 +47,15 @@ app.message(
 
     console.log("1回目", JSON.stringify(msgOption, null, 4));
 
-    const findUserQuery = {
-      realName: context.profile.real_name,
-      displayName: context.profile.display_name,
-      slackID: context.channel.creator,
+    const findUserQuery: FindUserQuery = {
+      realName: context.profile.real_name as string,
+      displayName: context.profile.display_name as string,
+      slackID: context.channel.creator as string,
     };
-    const resInsertedUser = await mongoEntityMgr.findOneAndReplace(
-      "users",
-      { slackID: findUserQuery.slackID },
+    const resInsertedUser = await upsertUsers({
+      db: mongoEntityMgr,
       findUserQuery,
-      { upsert: true }
-    );
+    });
 
     const findMessageQuery = {
       ts: message.ts,
