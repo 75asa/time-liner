@@ -66,7 +66,7 @@ app.message(
     const findMessage = {
       ts: message.ts,
       content: message.text,
-      userId: insertedUser.value._id.generationTime,
+      userId: insertedUser.value._id,
       channelId: message.channel,
     };
     const insertedMessage = await mongoEntityMgr.findOneAndReplace(
@@ -75,17 +75,32 @@ app.message(
       findMessage,
       { upsert: true }
     );
-    console.log(insertedMessage);
 
-    await app.client.chat
+    const postTLRes = await app.client.chat
       .postMessage(msgOption)
-      .then((res) => {
-        if (res.ok) console.log("msg: ok ✅");
-      })
       .catch((err) => {
         console.error({ err });
         console.log(err.data.response_metadata);
+        return { ok: false, ts: null, channel: null, message: null };
       });
+
+    if (postTLRes.ok) {
+      console.log("msg: ok ✅");
+
+      const findTL = {
+        ts: postTLRes.ts,
+        bindedChannelID: postTLRes.channel,
+        contents: postTLRes.message.blocks,
+        usersPostID: insertedMessage.lastErrorObject.upserted,
+      };
+      const insertedTLRes = await mongoEntityMgr.findOneAndReplace(
+        "timeline",
+        { ts: findTL.ts },
+        findMessage,
+        { upsert: true }
+      );
+      console.log(insertedTLRes);
+    }
 
     console.log(JSON.stringify(context.files, null, 4));
 
@@ -115,13 +130,17 @@ app.message(
         .catch((e) => {
           console.log({ e });
         });
+
       console.log("2回目", JSON.stringify(msgOption, null, 4));
-      const res = await app.client.chat.postMessage(msgOption).catch((err) => {
-        console.error({ err });
-        console.log(err.data.response_metadata);
-        return { ok: false };
-      });
-      if (res.ok) console.log("msg: ok ✅");
+
+      const postfileTLRes = await app.client.chat
+        .postMessage(msgOption)
+        .catch((err) => {
+          console.error({ err });
+          console.log(err.data.response_metadata);
+          return { ok: false };
+        });
+      if (postfileTLRes.ok) console.log("msg: ok ✅");
     }
   }
 );
