@@ -51,32 +51,32 @@ app.message(
     // user.displayName = context.profile.display_name;
     // user.slackID = context.channel.creator;
 
-    const findUser = {
+    const findUserQuery = {
       realName: context.profile.real_name,
       displayName: context.profile.display_name,
       slackID: context.channel.creator,
     };
-    const insertedUser = await mongoEntityMgr.findOneAndReplace(
+    const resInsertedUser = await mongoEntityMgr.findOneAndReplace(
       "users",
-      { slackID: findUser.slackID },
-      findUser,
+      { slackID: findUserQuery.slackID },
+      findUserQuery,
       { upsert: true }
     );
 
-    const findMessage = {
+    const findMessageQuery = {
       ts: message.ts,
       content: message.text,
-      userId: insertedUser.value._id,
+      userId: resInsertedUser.value._id,
       channelId: message.channel,
     };
-    const insertedMessage = await mongoEntityMgr.findOneAndReplace(
+    const resInsertedUsersPosts = await mongoEntityMgr.findOneAndReplace(
       "users_posts",
-      { ts: findMessage.ts },
-      findMessage,
+      { ts: findMessageQuery.ts },
+      findMessageQuery,
       { upsert: true }
     );
 
-    const postTLRes = await app.client.chat
+    const resPostTL = await app.client.chat
       .postMessage(msgOption)
       .catch((err) => {
         console.error({ err });
@@ -84,22 +84,22 @@ app.message(
         return { ok: false, ts: null, channel: null, message: null };
       });
 
-    if (postTLRes.ok) {
+    if (resPostTL.ok) {
       console.log("msg: ok ✅");
 
-      const findTL = {
-        ts: postTLRes.ts,
-        bindedChannelID: postTLRes.channel,
-        contents: postTLRes.message.blocks,
-        usersPostID: insertedMessage.lastErrorObject.upserted,
+      const findTLQuery = {
+        ts: resPostTL.ts,
+        bindedChannelID: resPostTL.channel,
+        contents: resPostTL.message.blocks,
+        usersPostID: resInsertedUsersPosts.lastErrorObject.upserted,
       };
-      const insertedTLRes = await mongoEntityMgr.findOneAndReplace(
+      const resInsertedTL = await mongoEntityMgr.findOneAndReplace(
         "timeline",
-        { ts: findTL.ts },
-        findMessage,
+        { ts: findTLQuery.ts },
+        findMessageQuery,
         { upsert: true }
       );
-      console.log(insertedTLRes);
+      console.log({ resInsertedTL });
     }
 
     console.log(JSON.stringify(context.files, null, 4));
@@ -133,14 +133,14 @@ app.message(
 
       console.log("2回目", JSON.stringify(msgOption, null, 4));
 
-      const postfileTLRes = await app.client.chat
+      const resPostFileTL = await app.client.chat
         .postMessage(msgOption)
         .catch((err) => {
           console.error({ err });
           console.log(err.data.response_metadata);
           return { ok: false };
         });
-      if (postfileTLRes.ok) console.log("msg: ok ✅");
+      if (resPostFileTL.ok) console.log("msg: ok ✅");
     }
   }
 );
