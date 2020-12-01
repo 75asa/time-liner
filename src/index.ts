@@ -71,7 +71,7 @@ app.message(
     };
     const insertedMessage = await mongoEntityMgr.findOneAndReplace(
       "users_posts",
-      { ts: message.ts },
+      { ts: findMessage.ts },
       findMessage,
       { upsert: true }
     );
