@@ -13,7 +13,7 @@ Object.keys(dotenv).forEach((key) => {
 });
 
 let connection: Connection;
-let mongoEntityMgr: MongoEntityManager;
+let db: MongoEntityManager;
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
@@ -53,7 +53,7 @@ app.message(
       slackID: context.channel.creator as string,
     };
     const resInsertedUser = await upsertUsers({
-      db: mongoEntityMgr,
+      db,
       findUserQuery,
     });
 
@@ -63,7 +63,7 @@ app.message(
       userId: resInsertedUser.value._id,
       channelId: message.channel,
     };
-    const resInsertedUsersPosts = await mongoEntityMgr.findOneAndReplace(
+    const resInsertedUsersPosts = await db.findOneAndReplace(
       "users_posts",
       { ts: findMessageQuery.ts },
       findMessageQuery,
@@ -87,7 +87,7 @@ app.message(
         contents: resPostTL.message.blocks,
         usersPostID: resInsertedUsersPosts.lastErrorObject.upserted,
       };
-      const resInsertedTL = await mongoEntityMgr.findOneAndReplace(
+      const resInsertedTL = await db.findOneAndReplace(
         "timeline",
         { ts: findTLQuery.ts },
         findMessageQuery,
@@ -145,7 +145,7 @@ app.event("member_joined_channel", async () => {
 
 (async () => {
   connection = await createConnection();
-  mongoEntityMgr = new MongoEntityManager(connection);
+  db = new MongoEntityManager(connection);
 
   // Start your app
   await app.start(process.env.PORT || 3000);
