@@ -81,7 +81,7 @@ app.message(
     if (resPostTL.ok) {
       console.log("msg: ok ✅");
 
-      const findTLQuery = {
+      const queryFindTL = {
         ts: resPostTL.ts,
         bindedChannelID: resPostTL.channel,
         contents: resPostTL.message.blocks,
@@ -89,7 +89,7 @@ app.message(
       };
       const resInsertedTL = await db.findOneAndReplace(
         "timeline",
-        { ts: findTLQuery.ts },
+        { ts: queryFindTL.ts },
         findMessageQuery,
         { upsert: true }
       );
