@@ -1,5 +1,5 @@
 import { FindAndModifyWriteOpResultObject, MongoEntityManager } from "typeorm";
-import { QueryFindUser, QueryFindMessage } from "./inteface";
+import { QueryFindUser, QueryFindMessage, QueryFindTimeline } from "./inteface";
 
 export const users = async ({
   db,
@@ -28,6 +28,23 @@ export const usersPosts = async ({
   return await db.findOneAndReplace(
     "users_posts",
     { ts: queryFindMessage.ts },
+    queryFindMessage,
+    { upsert: true }
+  );
+};
+
+export const timeline = async ({
+  db,
+  queryFindTimeline,
+  queryFindMessage,
+}: {
+  db: MongoEntityManager;
+  queryFindTimeline: QueryFindTimeline;
+  queryFindMessage: QueryFindMessage;
+}): Promise<FindAndModifyWriteOpResultObject> => {
+  return await db.findOneAndReplace(
+    "timeline",
+    { ts: queryFindTimeline.ts },
     queryFindMessage,
     { upsert: true }
   );

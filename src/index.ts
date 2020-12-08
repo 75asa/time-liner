@@ -81,18 +81,17 @@ app.message(middleware.getChannelInfo, async ({ client, context, message }) => {
   if (resPostTL.ok) {
     console.log("msg: ok ✅");
 
-    const queryFindTL: QueryFindTimeline = {
+    const queryFindTimeline: QueryFindTimeline = {
       ts: resPostTL.ts,
       bindedChannelID: resPostTL.channel,
       contents: resPostTL.message.blocks,
       usersPostID: resInsertedUsersPosts.lastErrorObject.upserted,
     };
-    const resInsertedTL = await db.findOneAndReplace(
-      "timeline",
-      { ts: queryFindTL.ts },
+    const resInsertedTL = await query.upsert.timeline({
+      db,
       queryFindMessage,
-      { upsert: true }
-    );
+      queryFindTimeline,
+    });
     console.log({ resInsertedTL });
   }
 
