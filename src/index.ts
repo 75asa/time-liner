@@ -5,7 +5,11 @@ import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
 import { createConnection, MongoEntityManager, Connection } from "typeorm";
 import * as query from "./db/query";
-import { QueryFindUser, QueryFindMessage } from "./db/query/inteface";
+import {
+  QueryFindUser,
+  QueryFindMessage,
+  QueryFindTL,
+} from "./db/query/inteface";
 
 dotenv.config();
 
@@ -77,7 +81,7 @@ app.message(middleware.getChannelInfo, async ({ client, context, message }) => {
   if (resPostTL.ok) {
     console.log("msg: ok ✅");
 
-    const queryFindTL = {
+    const queryFindTL: QueryFindTL = {
       ts: resPostTL.ts,
       bindedChannelID: resPostTL.channel,
       contents: resPostTL.message.blocks,

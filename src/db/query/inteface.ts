@@ -10,3 +10,10 @@ export interface QueryFindMessage {
   userId: string;
   channelId: string;
 }
+
+export interface QueryFindTL {
+  ts: string;
+  bindedChannelID: string;
+  contents: string;
+  usersPostID: string;
+}
