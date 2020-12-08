@@ -1,17 +1,5 @@
 import { FindAndModifyWriteOpResultObject, MongoEntityManager } from "typeorm";
-
-export interface QueryFindUser {
-  realName: string;
-  displayName: string;
-  slackID: string;
-}
-
-export interface QueryFindMessage {
-  ts: string;
-  content: string;
-  userId: string;
-  channelId: string;
-}
+import { QueryFindUser, QueryFindMessage } from "./inteface";
 
 export const users = async ({
   db,
