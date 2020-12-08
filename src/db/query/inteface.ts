@@ -11,7 +11,7 @@ export interface QueryFindMessage {
   channelId: string;
 }
 
-export interface QueryFindTL {
+export interface QueryFindTimeline {
   ts: string;
   bindedChannelID: string;
   contents: string;
