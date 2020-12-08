@@ -62,7 +62,7 @@ app.message(middleware.getChannelInfo, async ({ client, context, message }) => {
   const queryFindMessage: QueryFindMessage = {
     ts: message.ts,
     content: message.text,
-    userId: resInsertedUser.value._id,
+    userId: resInsertedUser.value._id as string,
     channelId: message.channel,
   };
   const resInsertedUsersPosts = await query.upsert.usersPosts({
@@ -83,9 +83,9 @@ app.message(middleware.getChannelInfo, async ({ client, context, message }) => {
 
     const queryFindTimeline: QueryFindTimeline = {
       ts: resPostTL.ts,
-      bindedChannelID: resPostTL.channel,
-      contents: resPostTL.message.blocks,
-      usersPostID: resInsertedUsersPosts.lastErrorObject.upserted,
+      bindedChannelID: resPostTL.channel as string,
+      contents: resPostTL.message.blocks as string,
+      usersPostID: resInsertedUsersPosts.lastErrorObject.upserted as string,
     };
     const resInsertedTL = await query.upsert.timeline({
       db,
