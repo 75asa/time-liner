@@ -6,13 +6,13 @@ export interface FindUserQuery {
   slackID: string;
 }
 
-export async function upsertUsers({
+export const users = async ({
   db,
   findUserQuery,
 }: {
   db: MongoEntityManager;
   findUserQuery: FindUserQuery;
-}): Promise<FindAndModifyWriteOpResultObject> {
+}): Promise<FindAndModifyWriteOpResultObject> => {
   return await db.findOneAndReplace(
     "users",
     { slackID: findUserQuery.slackID },
@@ -21,4 +21,4 @@ export async function upsertUsers({
       upsert: true,
     }
   );
-}
+};

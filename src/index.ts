@@ -4,7 +4,8 @@ import dotenv from "dotenv";
 import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
 import { createConnection, MongoEntityManager, Connection } from "typeorm";
-import { upsertUsers, FindUserQuery } from "./db/query";
+import * as query from "./db/query";
+import { FindUserQuery } from "./db/query/upsert";
 
 dotenv.config();
 
@@ -52,7 +53,7 @@ app.message(
       displayName: context.profile.display_name as string,
       slackID: context.channel.creator as string,
     };
-    const resInsertedUser = await upsertUsers({
+    const resInsertedUser = await query.upsert.users({
       db,
       findUserQuery,
     });
