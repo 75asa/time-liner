@@ -5,7 +5,7 @@ import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
 import { createConnection, MongoEntityManager, Connection } from "typeorm";
 import * as query from "./db/query";
-import { QueryFindUser } from "./db/query/upsert";
+import { QueryFindUser, QueryFindMessage } from "./db/query/upsert";
 
 dotenv.config();
 
@@ -58,18 +58,16 @@ app.message(
       queryFindUser,
     });
 
-    const queryFindMessage = {
+    const queryFindMessage: QueryFindMessage = {
       ts: message.ts,
       content: message.text,
       userId: resInsertedUser.value._id,
       channelId: message.channel,
     };
-    const resInsertedUsersPosts = await db.findOneAndReplace(
-      "users_posts",
-      { ts: queryFindMessage.ts },
+    const resInsertedUsersPosts = await query.upsert.usersPosts({
+      db,
       queryFindMessage,
-      { upsert: true }
-    );
+    });
 
     const resPostTL = await app.client.chat
       .postMessage(msgOption)
