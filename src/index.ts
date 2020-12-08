@@ -5,7 +5,7 @@ import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
 import { createConnection, MongoEntityManager, Connection } from "typeorm";
 import * as query from "./db/query";
-import { FindUserQuery } from "./db/query/upsert";
+import { QueryFindUser } from "./db/query/upsert";
 
 dotenv.config();
 
@@ -48,14 +48,14 @@ app.message(
 
     console.log("1回目", JSON.stringify(msgOption, null, 4));
 
-    const findUserQuery: FindUserQuery = {
+    const queryFindUser: QueryFindUser = {
       realName: context.profile.real_name as string,
       displayName: context.profile.display_name as string,
       slackID: context.channel.creator as string,
     };
     const resInsertedUser = await query.upsert.users({
       db,
-      findUserQuery,
+      queryFindUser,
     });
 
     const queryFindMessage = {

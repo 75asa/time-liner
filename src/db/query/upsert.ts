@@ -1,6 +1,6 @@
 import { FindAndModifyWriteOpResultObject, MongoEntityManager } from "typeorm";
 
-export interface FindUserQuery {
+export interface QueryFindUser {
   realName: string;
   displayName: string;
   slackID: string;
@@ -8,15 +8,15 @@ export interface FindUserQuery {
 
 export const users = async ({
   db,
-  findUserQuery,
+  queryFindUser,
 }: {
   db: MongoEntityManager;
-  findUserQuery: FindUserQuery;
+  queryFindUser: QueryFindUser;
 }): Promise<FindAndModifyWriteOpResultObject> => {
   return await db.findOneAndReplace(
     "users",
-    { slackID: findUserQuery.slackID },
-    findUserQuery,
+    { slackID: queryFindUser.slackID },
+    queryFindUser,
     {
       upsert: true,
     }
