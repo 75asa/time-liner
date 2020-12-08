@@ -58,7 +58,7 @@ app.message(
       findUserQuery,
     });
 
-    const findMessageQuery = {
+    const queryFindMessage = {
       ts: message.ts,
       content: message.text,
       userId: resInsertedUser.value._id,
@@ -66,8 +66,8 @@ app.message(
     };
     const resInsertedUsersPosts = await db.findOneAndReplace(
       "users_posts",
-      { ts: findMessageQuery.ts },
-      findMessageQuery,
+      { ts: queryFindMessage.ts },
+      queryFindMessage,
       { upsert: true }
     );
 
@@ -91,7 +91,7 @@ app.message(
       const resInsertedTL = await db.findOneAndReplace(
         "timeline",
         { ts: queryFindTL.ts },
-        findMessageQuery,
+        queryFindMessage,
         { upsert: true }
       );
       console.log({ resInsertedTL });
