@@ -18,11 +18,14 @@ const app = new App({
 });
 
 // custom middleware's
-app.use(middleware.notBotMessages);
-app.use(middleware.noThreadMessages);
-app.use(middleware.getTeamInfo);
-app.use(middleware.addUsersInfoContext);
-app.use(middleware.getFileInfo);
+// app.use(middleware.notBotMessages);
+// app.use(middleware.noThreadMessages);
+// app.use(middleware.getTeamInfo);
+// app.use(middleware.addUsersInfoContext);
+// app.use(middleware.getFileInfo);
+
+// like this
+middleware.enableAll(app);
 
 app.message(middleware.getChannelInfo, async ({ client, context, message }) => {
   const msgOption: ChatPostMessageArguments = {
