@@ -118,16 +118,15 @@ export const getChannelInfo: (args: MiddlewareParam) => Promise<void> = async ({
 export const enableAll = async (app: App) => {
   if (process.env.SLACK_REQUEST_LOG_ENABLED === "1") {
     app.use(async (args) => {
-      Promise.all([
+      await Promise.all([
         getTeamInfo(args),
         getFileInfo(args),
         addUsersInfoContext(args),
         notBotMessages(args),
         noThreadMessages(args),
-      ]).then((res) => {
-        console.log("finished enable all :", res);
-        return res;
-      });
+        getChannelInfo(args),
+      ]);
+      console.log("finished enable all");
       const copiedArgs = JSON.parse(JSON.stringify(args));
       // console.log({copiedArgs})
       copiedArgs.context.botToken = "xoxb-***";

@@ -17,11 +17,10 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
-(async () => {
-  await middleware.enableAll(app);
-})();
+(async () => await middleware.enableAll(app))();
 
-app.message(middleware.getChannelInfo, async ({ client, context, message }) => {
+app.message(async ({ client, context, message }) => {
+  console.log({ context });
   const msgOption: ChatPostMessageArguments = {
     token: client.token,
     channel: process.env.CHANNEL_NAME,
@@ -130,6 +129,8 @@ app.message(middleware.getChannelInfo, async ({ client, context, message }) => {
 (async () => {
   // Start your app
   await app.start(process.env.PORT || 3000);
+
+  // await middleware.enableAll(app);
 
   console.log("⚡️ Bolt app is running!");
 })();
