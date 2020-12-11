@@ -17,14 +17,6 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
-// custom middleware's
-// app.use(middleware.notBotMessages);
-// app.use(middleware.noThreadMessages);
-// app.use(middleware.getTeamInfo);
-// app.use(middleware.addUsersInfoContext);
-// app.use(middleware.getFileInfo);
-
-// like this
 (async () => {
   await middleware.enableAll(app);
 })();
