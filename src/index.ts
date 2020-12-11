@@ -25,7 +25,9 @@ const app = new App({
 // app.use(middleware.getFileInfo);
 
 // like this
-middleware.enableAll(app);
+(async () => {
+  await middleware.enableAll(app);
+})();
 
 app.message(middleware.getChannelInfo, async ({ client, context, message }) => {
   const msgOption: ChatPostMessageArguments = {
