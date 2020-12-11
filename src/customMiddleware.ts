@@ -117,6 +117,21 @@ export const getChannelInfo: any = async ({
 export const enableAll: any = async (app: App): Promise<void> => {
   if (process.env.SLACK_REQUEST_LOG_ENABLED === "1") {
     app.use(async (args) => {
+      await notBotMessages(args);
+    });
+    app.use(async (args) => {
+      await noThreadMessages(args);
+    });
+    app.use(async (args) => {
+      await getTeamInfo(args);
+    });
+    app.use(async (args) => {
+      await addUsersInfoContext(args);
+    });
+    app.use(async (args) => {
+      await getFileInfo(args);
+    });
+    app.use(async (args) => {
       const copiedArgs = JSON.parse(JSON.stringify(args));
       // console.log({copiedArgs})
       copiedArgs.context.botToken = "xoxb-***";
