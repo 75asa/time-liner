@@ -3,6 +3,7 @@ import { ChatPostMessageArguments } from "@slack/web-api";
 import dotenv from "dotenv";
 import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
+import { SendMessageParam } from "./bolt.interface";
 
 dotenv.config();
 
@@ -17,9 +18,11 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
-(async () => await middleware.enableAll(app))();
-
-app.message(async ({ client, context, message }) => {
+const sendMessage: (args: SendMessageParam) => Promise<void> = async ({
+  client,
+  context,
+  message,
+}) => {
   console.log({ context });
   const msgOption: ChatPostMessageArguments = {
     token: client.token,
@@ -124,13 +127,17 @@ app.message(async ({ client, context, message }) => {
         });
     }
   }
-});
+};
 
 (async () => {
+  // Enable All Middlewares
+  await middleware.enableAll(app);
+
+  // Send Message
+  app.message(sendMessage);
+
   // Start your app
   await app.start(process.env.PORT || 3000);
-
-  // await middleware.enableAll(app);
 
   console.log("⚡️ Bolt app is running!");
 })();

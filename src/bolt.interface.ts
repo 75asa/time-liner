@@ -13,3 +13,9 @@ export interface MiddlewareParam {
   message?: MessageEvent;
   context?: Context;
 }
+
+export interface SendMessageParam {
+  client: WebClient;
+  context: Context;
+  message: MessageEvent;
+}
