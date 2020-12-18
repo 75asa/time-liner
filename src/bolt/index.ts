@@ -4,12 +4,12 @@ import dotenv from "dotenv";
 import * as middleware from "./customMiddleware";
 import * as blocKit from "./block";
 import { createConnection, MongoEntityManager, Connection } from "typeorm";
-import * as query from "./db/query";
+import * as query from "../db/query";
 import {
   QueryFindUser,
   QueryFindMessage,
   QueryFindTimeline,
-} from "./db/query/inteface";
+} from "../db/query/inteface";
 
 dotenv.config();
 
