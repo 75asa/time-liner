@@ -1,4 +1,5 @@
 import { App } from "@slack/bolt";
+import { WebAPICallResult } from "@slack/web-api";
 import { MiddlewareParam } from "./interface";
 
 export const notBotMessages: any = async ({
@@ -53,11 +54,12 @@ export const addUsersInfoContext: any = async ({
       user: message.user,
       include_locale: true,
     })
-    .then((u: any) => {
+    .then((u: WebAPICallResult) => {
       if (u.ok) {
-        context.tz_offset = u.user.tz_offset;
+        context.tz_offset = u.user["tz_offset"];
         context.user = u.user;
-        context.profile = u.user.profile;
+        context.profile = u.user["profile"];
+        console.log({ context });
       }
     })
     .catch((err) => {
