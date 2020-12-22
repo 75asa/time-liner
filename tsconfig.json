@@ -17,5 +17,7 @@
     "experimentalDecorators": true
   },
   "compileOnSave": true,
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "emitDecoratatorMetadata": true,
+  "experimentalDecorators": true
 }

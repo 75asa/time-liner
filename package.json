@@ -51,6 +51,7 @@
     "lint": "eslint --ext .ts,.tsx ./src --cache",
     "lintfix": "eslint --ext .ts,.tsx ./src --cache --fix",
     "local": "npm run build:live",
+    "migration": "npm run typeorm migration:create -n",
     "ngrok": "ngrok http 3333",
     "postinstall": "npm run build",
     "start": "node lib/index.js",

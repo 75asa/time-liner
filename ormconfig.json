@@ -6,8 +6,8 @@
   "synchronize": true,
   "logging": false,
   "entities": ["lib/entity/*.{js, ts}"],
-  "subscribers": ["lib/subscriber/*.js"],
-  "migrations": ["lib/migration/*.js"],
+  "subscribers": ["lib/subscriber/*.ts"],
+  "migrations": ["lib/migration/*.ts"],
   "cli": {
     "entitiesDir": "lib/entity",
     "migrationsDir": "lib/migration",
