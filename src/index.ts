@@ -1,15 +1,15 @@
 import { App, LogLevel } from "@slack/bolt";
 import { ChatPostMessageArguments } from "@slack/web-api";
 import dotenv from "dotenv";
-import * as middleware from "./customMiddleware";
-import * as blocKit from "./block";
+import * as middleware from "./bolt/customMiddleware";
+import * as blocKit from "./bolt/block";
 import { createConnection, MongoEntityManager, Connection } from "typeorm";
-import * as query from "../db/query";
+import * as query from "./db/query";
 import {
   QueryFindUser,
   QueryFindMessage,
   QueryFindTimeline,
-} from "../db/query/inteface";
+} from "./db/query/inteface";
 
 dotenv.config();
 
