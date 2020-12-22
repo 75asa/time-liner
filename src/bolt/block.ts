@@ -1,7 +1,10 @@
 import { KnownBlock } from "@slack/types";
-import { MessageEventParam } from "./interface";
+import * as bolt from "./index";
 
-const getPostedURL = ({ context, message }: MessageEventParam): string => {
+const getPostedURL = ({
+  context,
+  message,
+}: bolt.interfaces.MessageEventParam): string => {
   return `<https://${context.team.name}.slack.com/archives/${
     message.channel
   }/p${message.ts.replace(".", "")}|詳しくみる>`;
@@ -10,7 +13,7 @@ const getPostedURL = ({ context, message }: MessageEventParam): string => {
 export const dealBlock = async ({
   context,
   message,
-}: MessageEventParam): Promise<Array<KnownBlock>> => {
+}: bolt.interfaces.MessageEventParam): Promise<Array<KnownBlock>> => {
   const defaultTemplate: Array<KnownBlock> = [];
 
   const header: KnownBlock = {
