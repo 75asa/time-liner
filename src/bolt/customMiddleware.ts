@@ -1,11 +1,11 @@
 import { App } from "@slack/bolt";
 import { WebAPICallResult } from "@slack/web-api";
-import * as bolt from "./index";
+import * as bolt from "./interface";
 
 export const notBotMessages: any = async ({
   message,
   next,
-}: bolt.interfaces.MiddlewareParam) => {
+}: bolt.MiddlewareParam) => {
   console.log({ message });
   const isExistSubtype = message.subtype && message.subtype === "bot_message";
   const isExistBotID = "bot_id" in message;
@@ -15,7 +15,7 @@ export const notBotMessages: any = async ({
 export const noThreadMessages: any = async ({
   message,
   next,
-}: bolt.interfaces.MiddlewareParam) => {
+}: bolt.MiddlewareParam) => {
   if (!message.thread_ts) await next();
 };
 
@@ -28,7 +28,7 @@ export const getTeamInfo: any = async ({
   client,
   context,
   next,
-}: bolt.interfaces.MiddlewareParam): Promise<void> => {
+}: bolt.MiddlewareParam): Promise<void> => {
   await client.team
     .info()
     .then((team) => {
@@ -48,7 +48,7 @@ export const addUsersInfoContext: any = async ({
   message,
   context,
   next,
-}: bolt.interfaces.MiddlewareParam): Promise<void> => {
+}: bolt.MiddlewareParam): Promise<void> => {
   await client.users
     .info({
       user: message.user,
@@ -73,7 +73,7 @@ export const getFileInfo: any = async ({
   context,
   next,
   message,
-}: bolt.interfaces.MiddlewareParam) => {
+}: bolt.MiddlewareParam) => {
   if (message.files) {
     context.files = await message.files.reduce(
       (acc, file, idx) => {
@@ -102,7 +102,7 @@ export const getChannelInfo: any = async ({
   message,
   context,
   next,
-}: bolt.interfaces.MiddlewareParam): Promise<void> => {
+}: bolt.MiddlewareParam): Promise<void> => {
   await client.conversations
     .info({
       channel: message.channel,
