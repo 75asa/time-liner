@@ -22,14 +22,14 @@ const app = new App({
 });
 
 // custom middleware's
-app.use(bolt.customMiddleware.notBotMessages);
-app.use(bolt.customMiddleware.noThreadMessages);
-app.use(bolt.customMiddleware.getTeamInfo);
-app.use(bolt.customMiddleware.addUsersInfoContext);
-app.use(bolt.customMiddleware.getFileInfo);
+app.use(bolt.customMiddlewares.notBotMessages);
+app.use(bolt.customMiddlewares.noThreadMessages);
+app.use(bolt.customMiddlewares.getTeamInfo);
+app.use(bolt.customMiddlewares.addUsersInfoContext);
+app.use(bolt.customMiddlewares.getFileInfo);
 
 app.message(
-  bolt.customMiddleware.getChannelInfo,
+  bolt.customMiddlewares.getChannelInfo,
   async ({ client, context, message }) => {
     const msgOption: ChatPostMessageArguments = {
       token: client.token,
@@ -40,7 +40,7 @@ app.message(
       unfurl_media: true,
       icon_url: context.profile.image_original,
       username: context.profile.display_name || context.profile.real_name,
-      blocks: await bolt.block.dealBlock({ context, message }),
+      blocks: await bolt.blocks.dealBlock({ context, message }),
     };
 
     console.log("1回目", JSON.stringify(msgOption, null, 4));
@@ -50,7 +50,7 @@ app.message(
       displayName: context.profile.display_name as string,
       slackID: context.channel.creator as string,
     };
-    const resInsertedUser = await query.upsert.users({
+    const resInsertedUser = await query.upserts.users({
       db,
       queryFindUser,
     });
@@ -61,7 +61,7 @@ app.message(
       userId: resInsertedUser.value._id as string,
       channelId: message.channel,
     };
-    const resInsertedUsersPosts = await query.upsert.usersPosts({
+    const resInsertedUsersPosts = await query.upserts.usersPosts({
       db,
       queryFindMessage,
     });
@@ -83,7 +83,7 @@ app.message(
         contents: resPostTL.message.blocks as string,
         usersPostID: resInsertedUsersPosts.lastErrorObject.upserted as string,
       };
-      const resInsertedTL = await query.upsert.timeline({
+      const resInsertedTL = await query.upserts.timeline({
         db,
         queryFindMessage,
         queryFindTimeline,
