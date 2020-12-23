@@ -2,8 +2,7 @@ import { App, LogLevel } from "@slack/bolt";
 import { ChatPostMessageArguments } from "@slack/web-api";
 import { createConnection, MongoEntityManager, Connection } from "typeorm";
 import dotenv from "dotenv";
-import * as bolt from "./bolt/index";
-import * as blocKit from "./bolt/block";
+import * as bolt from "./bolt";
 import * as query from "./db/query";
 
 dotenv.config();
@@ -41,7 +40,7 @@ app.message(
       unfurl_media: true,
       icon_url: context.profile.image_original,
       username: context.profile.display_name || context.profile.real_name,
-      blocks: await blocKit.dealBlock({ context, message }),
+      blocks: await bolt.block.dealBlock({ context, message }),
     };
 
     console.log("1回目", JSON.stringify(msgOption, null, 4));
