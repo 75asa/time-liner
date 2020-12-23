@@ -1,12 +1,12 @@
 import { FindAndModifyWriteOpResultObject, MongoEntityManager } from "typeorm";
-import * as query from "./inteface";
+import * as types from "./inteface";
 
 export const users = async ({
   db,
   queryFindUser,
 }: {
   db: MongoEntityManager;
-  queryFindUser: query.QueryFindUser;
+  queryFindUser: types.QueryFindUser;
 }): Promise<FindAndModifyWriteOpResultObject> => {
   return await db.findOneAndReplace(
     "users",
@@ -23,7 +23,7 @@ export const usersPosts = async ({
   queryFindMessage,
 }: {
   db: MongoEntityManager;
-  queryFindMessage: query.QueryFindMessage;
+  queryFindMessage: types.QueryFindMessage;
 }): Promise<FindAndModifyWriteOpResultObject> => {
   return await db.findOneAndReplace(
     "users_posts",
@@ -39,8 +39,8 @@ export const timeline = async ({
   queryFindMessage,
 }: {
   db: MongoEntityManager;
-  queryFindTimeline: query.QueryFindTimeline;
-  queryFindMessage: query.QueryFindMessage;
+  queryFindTimeline: types.QueryFindTimeline;
+  queryFindMessage: types.QueryFindMessage;
 }): Promise<FindAndModifyWriteOpResultObject> => {
   return await db.findOneAndReplace(
     "timeline",
