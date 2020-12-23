@@ -1,6 +1,10 @@
 import { KnownBlock } from "@slack/types";
+import * as types from "./interface";
 
-const getPostedURL = ({ context, message }): string => {
+const getPostedURL = ({
+  context,
+  message,
+}: types.MessageEventParam): string => {
   return `<https://${context.team.name}.slack.com/archives/${
     message.channel
   }/p${message.ts.replace(".", "")}|詳しくみる>`;
@@ -9,7 +13,7 @@ const getPostedURL = ({ context, message }): string => {
 export const dealBlock = async ({
   context,
   message,
-}): Promise<Array<KnownBlock>> => {
+}: types.MessageEventParam): Promise<Array<KnownBlock>> => {
   const defaultTemplate: Array<KnownBlock> = [];
 
   const header: KnownBlock = {

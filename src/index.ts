@@ -1,10 +1,9 @@
 import { App, LogLevel } from "@slack/bolt";
 import { ChatPostMessageArguments } from "@slack/web-api";
-import dotenv from "dotenv";
-import * as middleware from "./customMiddleware";
-import * as blocKit from "./block";
 import { createConnection, MongoEntityManager, Connection } from "typeorm";
-import { UserEntity } from "./entity/User";
+import dotenv from "dotenv";
+import * as bolt from "./bolt";
+import * as query from "./db/query";
 
 dotenv.config();
 
@@ -13,7 +12,7 @@ Object.keys(dotenv).forEach((key) => {
 });
 
 let connection: Connection;
-let mongoEntityMgr: MongoEntityManager;
+let db: MongoEntityManager;
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
@@ -23,15 +22,14 @@ const app = new App({
 });
 
 // custom middleware's
-app.use(middleware.notBotMessages);
-app.use(middleware.noThreadMessages);
-app.use(middleware.getTeamInfo);
-app.use(middleware.addUsersInfoContext);
-app.use(middleware.getFileInfo);
+app.use(bolt.customMiddlewares.notBotMessages);
+app.use(bolt.customMiddlewares.noThreadMessages);
+app.use(bolt.customMiddlewares.getTeamInfo);
+app.use(bolt.customMiddlewares.addUsersInfoContext);
+app.use(bolt.customMiddlewares.getFileInfo);
 
 app.message(
-  middleware.getChannelInfo,
-  /^(.*)/ as any,
+  bolt.customMiddlewares.getChannelInfo,
   async ({ client, context, message }) => {
     const msgOption: ChatPostMessageArguments = {
       token: client.token,
@@ -42,42 +40,56 @@ app.message(
       unfurl_media: true,
       icon_url: context.profile.image_original,
       username: context.profile.display_name || context.profile.real_name,
-      blocks: await blocKit.dealBlock({ context, message }),
+      blocks: await bolt.blocks.dealBlock({ context, message }),
     };
 
     console.log("1回目", JSON.stringify(msgOption, null, 4));
 
-    // const user = new UserEntity();
-    // user.realName = context.profile.real_name;
-    // user.displayName = context.profile.display_name;
-    // user.slackID = context.channel.creator;
-
-    const user = {
-      realName: context.profile.real_name,
-      displayName: context.profile.display_name,
-      slackID: context.channel.creator,
+    const queryFindUser: query.interfaces.QueryFindUser = {
+      realName: context.profile.real_name as string,
+      displayName: context.profile.display_name as string,
+      slackID: context.channel.creator as string,
     };
-    const query = {
-      slackID: user.slackID,
-    };
-    await mongoEntityMgr
-      .findOneAndReplace("users", query, user, { upsert: true })
-      .then((res) => {
-        console.log({ res });
-      })
-      .catch((err) => {
-        console.log({ err });
-      });
+    const resInsertedUser = await query.upserts.users({
+      db,
+      queryFindUser,
+    });
 
-    await app.client.chat
+    const queryFindMessage: query.interfaces.QueryFindMessage = {
+      ts: message.ts,
+      content: message.text,
+      userId: resInsertedUser.value._id as string,
+      channelId: message.channel,
+    };
+    const resInsertedUsersPosts = await query.upserts.usersPosts({
+      db,
+      queryFindMessage,
+    });
+
+    const resPostTL = await app.client.chat
       .postMessage(msgOption)
-      .then((res) => {
-        if (res.ok) console.log("msg: ok ✅");
-      })
       .catch((err) => {
         console.error({ err });
         console.log(err.data.response_metadata);
+        return { ok: false, ts: null, channel: null, message: null };
       });
+
+    if (resPostTL.ok) {
+      console.log("msg: ok ✅");
+
+      const queryFindTimeline: query.interfaces.QueryFindTimeline = {
+        ts: resPostTL.ts,
+        bindedChannelID: resPostTL.channel as string,
+        contents: resPostTL.message.blocks as string,
+        usersPostID: resInsertedUsersPosts.lastErrorObject.upserted as string,
+      };
+      const resInsertedTL = await query.upserts.timeline({
+        db,
+        queryFindMessage,
+        queryFindTimeline,
+      });
+      console.log({ resInsertedTL });
+    }
 
     console.log(JSON.stringify(context.files, null, 4));
 
@@ -107,16 +119,17 @@ app.message(
         .catch((e) => {
           console.log({ e });
         });
+
       console.log("2回目", JSON.stringify(msgOption, null, 4));
-      await app.client.chat
+
+      const resPostFileTL = await app.client.chat
         .postMessage(msgOption)
-        .then((res) => {
-          if (res.ok) console.log("msg: ok ✅");
-        })
         .catch((err) => {
           console.error({ err });
           console.log(err.data.response_metadata);
+          return { ok: false };
         });
+      if (resPostFileTL.ok) console.log("msg: ok ✅");
     }
   }
 );
@@ -127,7 +140,7 @@ app.event("member_joined_channel", async () => {
 
 (async () => {
   connection = await createConnection();
-  mongoEntityMgr = new MongoEntityManager(connection);
+  db = new MongoEntityManager(connection);
 
   // Start your app
   await app.start(process.env.PORT || 3000);

@@ -1,11 +1,21 @@
-export const notBotMessages: any = async ({ message, next }) => {
+import { App } from "@slack/bolt";
+import { WebAPICallResult } from "@slack/web-api";
+import * as types from "./interface";
+
+export const notBotMessages: any = async ({
+  message,
+  next,
+}: types.MiddlewareParam) => {
   console.log({ message });
   const isExistSubtype = message.subtype && message.subtype === "bot_message";
   const isExistBotID = "bot_id" in message;
   if (!isExistSubtype && !isExistBotID && !message.hidden) await next();
 };
 
-export const noThreadMessages: any = async ({ message, next }) => {
+export const noThreadMessages: any = async ({
+  message,
+  next,
+}: types.MiddlewareParam) => {
   if (!message.thread_ts) await next();
 };
 
@@ -14,7 +24,11 @@ export const noThreadMessages: any = async ({ message, next }) => {
 //   if (!message.thread_ts) await next();
 // };
 
-export const getTeamInfo: any = async ({ client, context, next }) => {
+export const getTeamInfo: any = async ({
+  client,
+  context,
+  next,
+}: types.MiddlewareParam): Promise<void> => {
   await client.team
     .info()
     .then((team) => {
@@ -34,17 +48,18 @@ export const addUsersInfoContext: any = async ({
   message,
   context,
   next,
-}) => {
+}: types.MiddlewareParam): Promise<void> => {
   await client.users
     .info({
       user: message.user,
       include_locale: true,
     })
-    .then((u) => {
+    .then((u: WebAPICallResult) => {
       if (u.ok) {
-        context.tz_offset = u.user.tz_offset;
+        context.tz_offset = u.user["tz_offset"];
         context.user = u.user;
-        context.profile = u.user.profile;
+        context.profile = u.user["profile"];
+        console.log({ context });
       }
     })
     .catch((err) => {
@@ -54,7 +69,11 @@ export const addUsersInfoContext: any = async ({
   await next();
 };
 
-export const getFileInfo: any = async ({ context, next, message }) => {
+export const getFileInfo: any = async ({
+  context,
+  next,
+  message,
+}: types.MiddlewareParam) => {
   if (message.files) {
     context.files = await message.files.reduce(
       (acc, file, idx) => {
@@ -83,7 +102,7 @@ export const getChannelInfo: any = async ({
   message,
   context,
   next,
-}) => {
+}: types.MiddlewareParam): Promise<void> => {
   await client.conversations
     .info({
       channel: message.channel,
@@ -97,9 +116,9 @@ export const getChannelInfo: any = async ({
   await next();
 };
 
-export const enableAll: any = async (app) => {
+export const enableAll: any = async (app: App): Promise<void> => {
   if (process.env.SLACK_REQUEST_LOG_ENABLED === "1") {
-    app.use(async (args: any) => {
+    app.use(async (args) => {
       const copiedArgs = JSON.parse(JSON.stringify(args));
       // console.log({copiedArgs})
       copiedArgs.context.botToken = "xoxb-***";
