@@ -25,7 +25,12 @@ const sendMessage: (args: SendMessageParam) => Promise<void> = async ({
 }) => {
   console.log({ context });
 
-  if ("profile" in context && "channel" in context) {
+  /**
+   * FIXME:
+   *  ここで context.channel を追加すると普通のメッセージが連投される
+   *  エラーは消える
+   */
+  if (context.profile && context.channel) {
     const msgOption: ChatPostMessageArguments = {
       token: client.token,
       channel: process.env.CHANNEL_NAME,
