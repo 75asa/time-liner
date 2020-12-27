@@ -1,5 +1,5 @@
 node_modules/
 lib/
 .env
-.vscode/
-!./vscode/launch.json
+.vscode/*
+!launch.json
