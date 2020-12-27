@@ -1,5 +1,8 @@
 # time-liner
 
+![compile](https://github.com/75asa/time-liner/workflows/compile/badge.svg)
+![Release Drafter](https://github.com/75asa/time-liner/workflows/Release%20Drafter/badge.svg)
+
 ## 概要
 
 - 指定の slack チャンネルを別のチャンネルに転送してくれる SlackApp
@@ -76,9 +79,11 @@
 }
 ```
 
-任意の位置にブレークポイントを設定後、デバッガから`Attach to Bolt`を実行。  
+任意の位置にブレークポイントを設定後、デバッガから`Attach to Bolt`を実行。
 `$npm run dev:watch`で本アプリをデバッグ実行。
 
 ## ビルド
+
+- heroku の pipeline を使用
 
 ## 注意
