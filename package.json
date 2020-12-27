@@ -6,12 +6,10 @@
   "dependencies": {
     "@slack/bolt": "^2.3.0",
     "@slack/web-api": "^5.14.0",
-    "axios": "0.19.1",
     "dotenv": "^8.2.0",
     "husky": "^4.3.0",
     "lodash": "^4.17.20",
     "mongodb": "^3.6.2",
-    "request": "^2.88.2",
     "typeorm": "^0.2.28"
   },
   "devDependencies": {
@@ -27,7 +25,7 @@
     "prettier": "^2.0.5",
     "pretty-quick": "^3.1.0",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
+    "typescript": ">=3.3.1 <4.1."
   },
   "engines": {
     "yarn": "1.*",
@@ -39,22 +37,22 @@
     }
   },
   "keywords": [],
-  "license": "ISC",
-  "main": "lib/bolt/index.js",
+  "license": "MIT",
+  "main": "lib/index.js",
   "scripts": {
     "build": "tsc -p .",
-    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/bolt/index.ts",
+    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "compile": "tsc",
     "deploy": "git push origin HEAD && git push heroku master",
-    "dev": "nodemon --watch './src/*.ts' --exec 'ts-node' src/bolt/index.ts --trace-warnings",
-    "dev:watch": "nodemon -L -w src -e ts -x \"tsc && node --require dotenv/config --inspect=localhost:9229 --experimental-modules lib/bolt/index.js\"",
+    "dev": "nodemon --watch './src/*.ts' --exec 'ts-node' src/index.ts --trace-warnings",
+    "dev:watch": "nodemon -L -w src -e ts -x \"tsc && node --require dotenv/config --inspect=localhost:9229 --experimental-modules lib/index.js\"",
     "format": "prettier --write './src/**/*.{ts,js}'",
     "lint": "eslint --ext .ts,.tsx ./src --cache",
     "lintfix": "eslint --ext .ts,.tsx ./src --cache --fix",
     "local": "npm run build:live",
     "ngrok": "ngrok http 3333",
     "postinstall": "npm run build",
-    "start": "node lib/bolt/index.js",
+    "start": "node lib/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
