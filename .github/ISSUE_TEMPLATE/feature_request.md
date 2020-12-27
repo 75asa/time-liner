@@ -1,6 +1,6 @@
 ---
-name: Feature request/追加機能
-about: Suggest an idea for this project/いい感じのアイディア
+name: Feature request / 追加機能
+about: Suggest an idea for this project / いい感じのアイディア
 title: ""
 labels: "enhancement"
 assignees: ""
