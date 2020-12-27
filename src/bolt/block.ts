@@ -78,10 +78,5 @@ export const dealBlock = async ({
       });
     });
   }
-
-  // console.log('blocks', JSON.stringify(defaultTemplate, null, 4));
-  // console.log({defaultTemplate})
-  // console.log(JSON.stringify(msg, null, 4))
-
   return new Promise((resolve) => resolve(defaultTemplate));
 };
