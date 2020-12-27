@@ -1,7 +1,8 @@
 blank_issues_enabled: true
-  - name:'Bug Report'
-  about:'Create a report of the issue you've encountered.'
-  url:'https://github.com/75asa/time-liner/issues/new?template=bug_report.md&projects=75asa/time-liner/1&labels=bug'
-  - name:'Feature Request'
-  about:'Suggest an idea for this project'
-  url:'https://github.com/75asa/time-liner/issues/new?template=bug_report.md&projects=75asa/time-liner/1&labels=feature'
+contact_links:
+  - name: Bug Report
+    about: Create a report of the issue you've encountered.
+    url: https://github.com/75asa/time-liner/issues/new?template=bug_report.md&projects=75asa/time-liner/1&labels=bug
+  - name: Feature Request
+    about: Suggest an idea for this project
+    url: https://github.com/75asa/time-liner/issues/new?template=bug_report.md&projects=75asa/time-liner/1&labels=feature
