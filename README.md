@@ -52,31 +52,7 @@
 
 ## デバッグ
 
-### [VSCode]
-
-`.vscode/launch.json` を作成し、以下の内容を貼り付け
-
-```json
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Attach to Bolt",
-      "type": "node",
-      "request": "attach",
-      "port": 9229,
-      "address": "localhost",
-      "localRoot": "${workspaceFolder}/lib",
-      "protocol": "inspector",
-      "outFiles": ["${workspaceFolder}/lib/**/*.js"],
-      "trace": true,
-      "restart": true
-    }
-  ]
-}
-```
-
-任意の位置にブレークポイントを設定後、デバッガから`Attach to Bolt`を実行。  
+任意の位置にブレークポイントを設定後、デバッガから`Attach to Bolt`を実行。
 `$npm run dev:watch`で本アプリをデバッグ実行。
 
 ## ビルド
