@@ -1,4 +1,4 @@
-import { Context, MessageEvent, NextFn } from "@slack/bolt";
+import { Context, MessageEvent, AllMiddlewareArgs } from "@slack/bolt";
 import { WebClient } from "@slack/web-api";
 
 export interface MessageEventParam {
@@ -6,10 +6,6 @@ export interface MessageEventParam {
   context: Context;
   client?: WebClient;
 }
-
-export interface MiddlewareParam {
-  next: NextFn;
-  client?: WebClient;
+export interface MiddlewareParam extends AllMiddlewareArgs {
   message?: MessageEvent;
-  context?: Context;
 }
