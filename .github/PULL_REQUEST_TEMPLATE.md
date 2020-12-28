@@ -1,11 +1,12 @@
-# What I did/技術的変更点概要
+**_What I did / 技術的変更点概要_**
 
-# Review Point/レビューしてほしい内容
+**_Review Point / レビューしてほしい内容_**
 
-# Test result & Test points/テスト結果とテスト項目
+**_Test result & Test points / テスト結果とテスト項目_**
 
 - [ ] ...
+- [ ] ...
 
-# Additional context/追記・備考
+**_Additional context / 追記・備考_**
 
 Add any other context about the problem here.
