@@ -1,7 +1,8 @@
 blank_issues_enabled: true
-    - name: Bug Report
-      about: Create a report of the issue you've encountered.
-      url: https://github.com/75asa/time-liner/issues/new?template=bug_report.md&projects=75asa%2Ftime-liner%2F4&labels=%3Aant%3A%20bug
-    - name: Feature Request
-      about: Suggest an idea for this project
-      url: https://github.com/75asa/time-liner/issues/new?template=feature_request.md&projects=75asa%2Ftime-liner%2F2
+contact_links:
+  - name: Bug Report into project / バグ -> Project
+    about: Create a report to help us improve & add default GitHub Project / プロダクトをもっとよくするためのバグ報告 & デフォルトの project に追加
+    url: https://github.com/75asa/time-liner/issues/new?template=bug_report.md&projects=75asa/time-liner/1&labels=bug
+  - name: Feature request into Project / 追加機能  -> Project
+    about: Suggest an idea for this project / いい感じのアイディア & デフォルトの project に追加
+    url: https://github.com/75asa/time-liner/issues/new?template=bug_report.md&projects=75asa/time-liner/1&labels=feature
