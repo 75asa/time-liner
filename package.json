@@ -2,7 +2,7 @@
   "name": "time-liner",
   "description": "",
   "version": "1.0.0",
-  "author": "",
+  "author": "75asa",
   "dependencies": {
     "@slack/bolt": "^2.3.0",
     "@slack/web-api": "^5.14.0",
@@ -52,6 +52,7 @@
     "local": "npm run build:live",
     "ngrok": "ngrok http 3333",
     "postinstall": "npm run build",
+    "release": "git checkout && git pull && npm version",
     "start": "node lib/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
