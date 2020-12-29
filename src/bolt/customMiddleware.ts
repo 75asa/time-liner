@@ -1,20 +1,21 @@
 import { App } from "@slack/bolt";
-import { MiddlewareParam } from "./bolt.interface";
+import { WebAPICallResult } from "@slack/web-api";
+import * as types from "./interface";
 
-export const notBotMessages: any = async ({
+export const notBotMessages = async ({
   message,
   next,
-}: MiddlewareParam) => {
+}: types.MiddlewareParam): Promise<void> => {
   console.log({ message });
   const isExistSubtype = message.subtype && message.subtype === "bot_message";
   const isExistBotID = "bot_id" in message;
   if (!isExistSubtype && !isExistBotID && !message.hidden) await next();
 };
 
-export const noThreadMessages: any = async ({
+export const noThreadMessages = async ({
   message,
   next,
-}: MiddlewareParam) => {
+}: types.MiddlewareParam): Promise<void> => {
   if (!message.thread_ts) await next();
 };
 
@@ -23,11 +24,11 @@ export const noThreadMessages: any = async ({
 //   if (!message.thread_ts) await next();
 // };
 
-export const getTeamInfo: any = async ({
+export const getTeamInfo = async ({
   client,
   context,
   next,
-}: MiddlewareParam): Promise<void> => {
+}: types.MiddlewareParam): Promise<void> => {
   await client.team
     .info()
     .then((team) => {
@@ -42,22 +43,23 @@ export const getTeamInfo: any = async ({
 };
 
 // To add posted user's profile to context
-export const addUsersInfoContext: any = async ({
+export const addUsersInfoContext = async ({
   client,
   message,
   context,
   next,
-}: MiddlewareParam): Promise<void> => {
+}: types.MiddlewareParam): Promise<void> => {
   await client.users
     .info({
       user: message.user,
       include_locale: true,
     })
-    .then((u: any) => {
+    .then((u: WebAPICallResult) => {
       if (u.ok) {
-        context.tz_offset = u.user.tz_offset;
+        context.tz_offset = u.user["tz_offset"];
         context.user = u.user;
-        context.profile = u.user.profile;
+        context.profile = u.user["profile"];
+        console.log({ context });
       }
     })
     .catch((err) => {
@@ -67,11 +69,11 @@ export const addUsersInfoContext: any = async ({
   await next();
 };
 
-export const getFileInfo: any = async ({
+export const getFileInfo = async ({
   context,
   next,
   message,
-}: MiddlewareParam) => {
+}: types.MiddlewareParam): Promise<void> => {
   if (message.files) {
     context.files = await message.files.reduce(
       (acc, file, idx) => {
@@ -95,12 +97,12 @@ export const getFileInfo: any = async ({
   await next();
 };
 
-export const getChannelInfo: any = async ({
+export const getChannelInfo = async ({
   client,
   message,
   context,
   next,
-}: MiddlewareParam): Promise<void> => {
+}: types.MiddlewareParam): Promise<void> => {
   await client.conversations
     .info({
       channel: message.channel,
@@ -114,7 +116,7 @@ export const getChannelInfo: any = async ({
   await next();
 };
 
-export const enableAll: any = async (app: App): Promise<void> => {
+export const enableAll = async (app: App): Promise<void> => {
   if (process.env.SLACK_REQUEST_LOG_ENABLED === "1") {
     app.use(async (args) => {
       const copiedArgs = JSON.parse(JSON.stringify(args));
