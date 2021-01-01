@@ -5,4 +5,4 @@ contact_links:
     url: https://github.com/75asa/time-liner/issues/new?template=bug_report.md&projects=75asa/time-liner/1&labels=bug
   - name: Feature request into Project / 追加機能  -> Project
     about: Suggest an idea for this project / いい感じのアイディア & デフォルトの project に追加
-    url: https://github.com/75asa/time-liner/issues/new?template=bug_report.md&projects=75asa/time-liner/1&labels=feature
+    url: https://github.com/75asa/time-liner/issues/new?template=feature_request.md&projects=75asa/time-liner/1&labels=feature
