@@ -2,15 +2,17 @@
   "useUnifiedTopology": true,
   "type": "mongodb",
   "host": "localhost",
+  "name": "time-liner",
   "database": "TL-Police",
+  "port": "27017",
   "synchronize": true,
   "logging": false,
-  "entities": ["lib/entity/*.{js, ts}"],
-  "subscribers": ["lib/subscriber/*.ts"],
-  "migrations": ["lib/migration/*.ts"],
+  "entities": ["src/entity/*/**.ts"],
+  "subscribers": ["src/db/subscriber/**/*.ts"],
+  "migrations": ["src/db/ migrations/**/*.ts"],
   "cli": {
-    "entitiesDir": "lib/entity",
-    "migrationsDir": "lib/migration",
-    "subscribersDir": "lib/subscriber"
+    "entitiesDir": "src/entity",
+    "migrationsDir": "src/db/migrations",
+    "subscribersDir": "src/db/subscriber"
   }
 }

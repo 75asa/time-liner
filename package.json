@@ -1,8 +1,8 @@
 {
   "name": "time-liner",
-  "description": "",
+  "description": "SlackApp to watch your channel and delivery the channel",
   "version": "1.0.0",
-  "author": "",
+  "author": "75asa",
   "dependencies": {
     "@slack/bolt": "^2.3.0",
     "@slack/web-api": "^5.14.0",
@@ -36,24 +36,24 @@
       "pre-commit": "fixpack && git add package.json && pretty-quick --staged"
     }
   },
-  "keywords": [],
   "license": "MIT",
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc -p .",
     "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "compile": "tsc",
-    "deploy": "git push origin HEAD && git push heroku master",
-    "dev": "nodemon --watch './src/*.ts' --exec 'ts-node' src/index.ts --trace-warnings",
+    "dev": "nodemon --watch './src/**/*.ts' --exec 'ts-node' src/index.ts --trace-warnings",
     "dev:watch": "nodemon -L -w src -e ts -x \"tsc && node --require dotenv/config --inspect=localhost:9229 --experimental-modules lib/index.js\"",
     "format": "prettier --write './src/**/*.{ts,js}'",
     "lint": "eslint --ext .ts,.tsx ./src --cache",
     "lintfix": "eslint --ext .ts,.tsx ./src --cache --fix",
     "local": "npm run build:live",
-    "migration": "npm run typeorm migration:create -n",
+    "migrate:create": "ts-node node_modules/.bin/typeorm migration:create",
+    "migrate:revert": "ts-node node_modules/.bin/typeorm migration:revert",
+    "migrate:run": "ts-node node_modules/.bin/typeorm migration:run",
+    "migrate:show": "ts-node node_modules/.bin/typeorm migration:show",
     "ngrok": "ngrok http 3333",
     "postinstall": "npm run build",
-    "start": "node lib/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node lib/index.js"
   }
 }
