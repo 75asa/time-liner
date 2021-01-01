@@ -12,6 +12,12 @@ import { UserEntity } from "./User";
 import { TimelineEntity } from "./Timeline";
 import { ObjectID, ObjectId } from "mongodb";
 
+export interface UsersPostsConstructorArgs {
+  ts: string;
+  userId: string;
+  channelID: string;
+}
+
 @Entity("users_posts")
 export class UsersPostEntity extends BaseEntity {
   @ObjectIdColumn()
@@ -21,7 +27,7 @@ export class UsersPostEntity extends BaseEntity {
     type: "varchar",
     length: 25,
   })
-  ts: number;
+  ts: string;
 
   @Column({
     type: "json",
@@ -47,4 +53,11 @@ export class UsersPostEntity extends BaseEntity {
     eager: true,
   })
   timelines: TimelineEntity[];
+
+  constructor({ ts, userId, channelID }: UsersPostsConstructorArgs) {
+    super();
+    this.ts = ts;
+    this.userId = userId;
+    this.channelID = channelID;
+  }
 }

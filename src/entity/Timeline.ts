@@ -10,6 +10,12 @@ import {
 } from "typeorm";
 import { UsersPostEntity } from "./UsersPost";
 
+export interface TimelineConstructorArgs {
+  ts: string;
+  binedChannelID: string;
+  usersPostID: string;
+}
+
 @Entity("timeline")
 export class TimelineEntity extends BaseEntity {
   @ObjectIdColumn()
@@ -40,4 +46,11 @@ export class TimelineEntity extends BaseEntity {
   @ManyToOne(() => UsersPostEntity, { eager: false })
   @JoinColumn({ name: "usersPostID" })
   usersPosts: UsersPostEntity;
+
+  constructor({ ts, binedChannelID, usersPostID }: TimelineConstructorArgs) {
+    super();
+    this.ts = ts;
+    this.bindedChannelID = binedChannelID;
+    this.usersPostID = usersPostID;
+  }
 }
