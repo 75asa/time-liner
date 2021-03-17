@@ -1,12 +1,6 @@
 import { KnownBlock } from "@slack/types";
 import { MessageEventParam } from "./bolt.interface";
 
-const getPostedURL = ({ context, message }: MessageEventParam): string => {
-  return `<https://${context.team.name}.slack.com/archives/${
-    message.channel
-  }/p${message.ts.replace(".", "")}|詳しくみる>`;
-};
-
 export const dealBlock = async ({
   context,
   message,
@@ -19,14 +13,6 @@ export const dealBlock = async ({
       {
         type: "mrkdwn",
         text: `投稿先   #${context.channel.name}`,
-      },
-      {
-        type: "mrkdwn",
-        text: "*|*",
-      },
-      {
-        type: "mrkdwn",
-        text: `*${getPostedURL({ context, message })}*`,
       },
     ],
   };
@@ -75,10 +61,6 @@ export const dealBlock = async ({
       });
     });
   }
-
-  // console.log('blocks', JSON.stringify(defaultTemplate, null, 4));
-  // console.log({defaultTemplate})
-  // console.log(JSON.stringify(msg, null, 4))
 
   return new Promise((resolve) => resolve(defaultTemplate));
 };
