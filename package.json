@@ -8,7 +8,7 @@
     "axios": "0.21.1",
     "dotenv": "^8.2.0",
     "husky": "^4.3.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "request": "^2.88.2"
   },
   "devDependencies": {
