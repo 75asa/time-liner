@@ -5,11 +5,17 @@ import dotenv from "dotenv";
 import * as bolt from "./bolt";
 import * as query from "./db/query";
 
-dotenv.config();
+const config = dotenv.config().parsed;
 
-Object.keys(dotenv).forEach((key) => {
-  process.env[key] = dotenv[key];
-});
+for (const key in config) {
+  process.env[key] = config[key];
+}
+
+// dotenv.config();
+
+// Object.keys(dotenv).forEach(key => {
+//   process.env[key] = dotenv[key];
+// });
 
 let connection: Connection;
 let db: MongoEntityManager;
@@ -21,15 +27,15 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
-// custom middleware's
-app.use(bolt.customMiddlewares.notBotMessages);
-app.use(bolt.customMiddlewares.noThreadMessages);
-app.use(bolt.customMiddlewares.getTeamInfo);
-app.use(bolt.customMiddlewares.addUsersInfoContext);
-app.use(bolt.customMiddlewares.getFileInfo);
+// custom middleware
+app.use(bolt.customMiddleware.notBotMessages);
+app.use(bolt.customMiddleware.noThreadMessages);
+app.use(bolt.customMiddleware.getTeamInfo);
+app.use(bolt.customMiddleware.addUsersInfoContext);
+app.use(bolt.customMiddleware.getFileInfo);
 
 app.message(
-  bolt.customMiddlewares.getChannelInfo,
+  bolt.customMiddleware.getChannelInfo,
   async ({ client, context, message }) => {
     const msgOption: ChatPostMessageArguments = {
       token: client.token,
