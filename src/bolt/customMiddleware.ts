@@ -1,28 +1,25 @@
-import { App } from "@slack/bolt";
+import { App, GenericMessageEvent, MessageEvent } from "@slack/bolt";
 import { WebAPICallResult } from "@slack/web-api";
 import * as types from "./interface";
 
-export const notBotMessages = async ({
+export const ignoreBotMessages = async ({
   message,
   next,
 }: types.MiddlewareParam): Promise<void> => {
   console.log({ message });
   const isExistSubtype = message.subtype && message.subtype === "bot_message";
   const isExistBotID = "bot_id" in message;
-  if (!isExistSubtype && !isExistBotID && !message.hidden) await next();
+  if (isGenericMessageEvent(message)) {
+    if (!isExistSubtype && !isExistBotID && !message.hidden) await next();
+  }
 };
 
-export const noThreadMessages = async ({
+export const ignoreThreadMessages = async ({
   message,
   next,
 }: types.MiddlewareParam): Promise<void> => {
-  if (!message.thread_ts) await next();
+  if (!message.subtype) await next();
 };
-
-// export const noTimeline: any = async ({ message, next }) => {
-//   // channel ID でTLに投稿されたのは無視する
-//   if (!message.thread_ts) await next();
-// };
 
 export const getTeamInfo = async ({
   client,
@@ -116,26 +113,8 @@ export const getChannelInfo = async ({
   await next();
 };
 
-export const enableAll = async (app: App): Promise<void> => {
-  if (process.env.SLACK_REQUEST_LOG_ENABLED === "1") {
-    app.use(async (args) => {
-      const copiedArgs = JSON.parse(JSON.stringify(args));
-      // console.log({copiedArgs})
-      copiedArgs.context.botToken = "xoxb-***";
-      if (copiedArgs.context.userToken) {
-        copiedArgs.context.userToken = "xoxp-***";
-      }
-      // copiedArgs.client = {};
-      // copiedArgs.logger = {};
-      args.logger.debug(
-        "Dumping request data for debugging...\n\n" +
-          JSON.stringify(copiedArgs, null, 2) +
-          "\n"
-      );
-      const result = await args.next();
-      // console.log({result})
-      args.logger.debug("next() call completed");
-      return result;
-    });
-  }
+export const isGenericMessageEvent = (
+  msg: MessageEvent
+): msg is GenericMessageEvent => {
+  return (msg as GenericMessageEvent).subtype === undefined;
 };
