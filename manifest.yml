@@ -2,7 +2,7 @@ _metadata:
   major_version: 1
   minor_version: 1
 display_information:
-  name: TLけいさつ
+  name: time-liner
   description: keep n watch user's timeline channel
   background_color: "#1c4b8a"
 features:
@@ -11,7 +11,7 @@ features:
     messages_tab_enabled: true
     messages_tab_read_only_enabled: false
   bot_user:
-    display_name: TLけいさつ
+    display_name: time-liner
     always_online: true
   unfurl_domains:
     - d-tambourine-bolt-tutorial
@@ -21,13 +21,7 @@ oauth_config:
     - https://tambourine.kibe.la/
   scopes:
     user:
-      - emoji:read
       - links:read
-      - links:write
-      - reactions:read
-      - reactions:write
-      - users:read
-      - channels:read
     bot:
       - channels:history
       - channels:read
