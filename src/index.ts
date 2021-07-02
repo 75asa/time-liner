@@ -19,7 +19,6 @@ if (Config.Slack.SOCKET_MODE) {
   appOption.socketMode = true;
   appOption.appToken = Config.Slack.APP_TOKEN;
 }
-console.log(Config.Slack.SOCKET_MODE, { appOption });
 const app = new App(appOption);
 
 // custom middleware
@@ -145,7 +144,7 @@ app.event("member_joined_channel", async () => {
   db = new MongoEntityManager(connection);
 
   // Start your app
-  await app.start();
+  await app.start(Config.Slack.SOCKET_MODE ? null : Config.Slack.PORT);
 
   console.log("⚡️ Bolt app is running!");
 })();

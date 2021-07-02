@@ -1,15 +1,6 @@
 import { KnownBlock } from "@slack/types";
 import * as types from "./interface";
 
-const getPostedURL = ({
-  context,
-  message,
-}: types.MessageEventParam): string => {
-  return `<https://${context.team.name}.slack.com/archives/${
-    message.channel
-  }/p${message.ts.replace(".", "")}|詳しくみる>`;
-};
-
 export const dealBlock = async ({
   context,
   message,
@@ -22,14 +13,6 @@ export const dealBlock = async ({
       {
         type: "mrkdwn",
         text: `投稿先   #${context.channel.name}`,
-      },
-      {
-        type: "mrkdwn",
-        text: "*|*",
-      },
-      {
-        type: "mrkdwn",
-        text: `*${getPostedURL({ context, message })}*`,
       },
     ],
   };
