@@ -2,9 +2,6 @@ import {
   BotMessageEvent,
   GenericMessageEvent,
   MessageEvent,
-  // MessageDeletedEvent,
-  // MessageRepliedEvent,
-  // ThreadBroadcastMessageEvent,
 } from "@slack/bolt";
 
 import {

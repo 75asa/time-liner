@@ -9,7 +9,6 @@ import {
 import { WebClient } from "@slack/web-api";
 
 export interface MessageEventParam {
-  // message: Middleware<SlackEventMiddlewareArgs<"message">>;
   message: GenericMessageEvent;
   context: Context;
   client?: WebClient;
