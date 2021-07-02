@@ -22,8 +22,8 @@ if (Config.Slack.SOCKET_MODE) {
 const app = new App(appOption);
 
 // custom middleware
-app.use(bolt.customMiddleware.notBotMessages);
-app.use(bolt.customMiddleware.noThreadMessages);
+app.use(bolt.customMiddleware.ignoreBotMessages);
+app.use(bolt.customMiddleware.ignoreThreadMessages);
 app.use(bolt.customMiddleware.getTeamInfo);
 app.use(bolt.customMiddleware.addUsersInfoContext);
 app.use(bolt.customMiddleware.getFileInfo);
@@ -31,7 +31,7 @@ app.use(bolt.customMiddleware.getFileInfo);
 app.message(
   bolt.customMiddleware.getChannelInfo,
   async ({ client, context, message }) => {
-    if (!bolt.customMiddleware.isGenericMessageEvent(message)) return;
+    if (!bolt.events.isGenericMessageEvent(message)) return;
     const msgOption: ChatPostMessageArguments = {
       token: client.token,
       channel: process.env.CHANNEL_NAME,
