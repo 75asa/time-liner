@@ -2,14 +2,11 @@ import {
   BotMessageEvent,
   GenericMessageEvent,
   MessageEvent,
-} from "@slack/bolt";
-
-import {
   MessageChangedEvent,
   MessageDeletedEvent,
   MessageRepliedEvent,
   ThreadBroadcastMessageEvent,
-} from "@slack/bolt/dist/types/events/message-events";
+} from "@slack/bolt";
 
 export const isGenericMessageEvent = (
   msg: MessageEvent
