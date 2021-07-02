@@ -9,13 +9,13 @@ export const ignoreBotMessages = async ({
   if (!events.isBotMessageEvent(message)) await next();
 };
 
-// export const ignoreThreadMessages = async ({
-//   message,
-//   next,
-// }: types.MiddlewareParam): Promise<void> => {
-//   if (events.isThreadBroadcastMessageEvent(message)) await next();
-//   if (!events.isMessageRepliedEvent(message)) await next();
-// };
+export const ignoreThreadMessages = async ({
+  message,
+  next,
+}: types.MiddlewareParam): Promise<void> => {
+  if (events.isThreadBroadcastMessageEvent(message)) await next();
+  if (!events.isMessageRepliedEvent(message)) await next();
+};
 
 export const getTeamInfo = async ({
   client,

@@ -2,18 +2,17 @@ import {
   BotMessageEvent,
   GenericMessageEvent,
   MessageEvent,
-  // MessageChangedEvent,
   // MessageDeletedEvent,
   // MessageRepliedEvent,
   // ThreadBroadcastMessageEvent,
 } from "@slack/bolt";
 
-// import {
-//   MessageChangedEvent,
-//   MessageDeletedEvent,
-//   MessageRepliedEvent,
-//   ThreadBroadcastMessageEvent,
-// } from "@slack/bolt/dist/types/events/message-events";
+import {
+  MessageChangedEvent,
+  MessageDeletedEvent,
+  MessageRepliedEvent,
+  ThreadBroadcastMessageEvent,
+} from "@slack/bolt/dist/types/events/message-events";
 
 export const isGenericMessageEvent = (
   msg: MessageEvent
@@ -27,26 +26,26 @@ export const isBotMessageEvent = (
   return (msg as BotMessageEvent).subtype === "bot_message";
 };
 
-// export const isMessageChangedEvent = (
-//   msg: MessageEvent
-// ): msg is MessageChangedEvent => {
-//   return (msg as MessageChangedEvent).subtype === "message_changed";
-// };
+export const isMessageChangedEvent = (
+  msg: MessageEvent
+): msg is MessageChangedEvent => {
+  return (msg as MessageChangedEvent).subtype === "message_changed";
+};
 
-// export const isMessageDeletedEvent = (
-//   msg: MessageEvent
-// ): msg is MessageDeletedEvent => {
-//   return (msg as MessageDeletedEvent).subtype === "message_deleted";
-// };
+export const isMessageDeletedEvent = (
+  msg: MessageEvent
+): msg is MessageDeletedEvent => {
+  return (msg as MessageDeletedEvent).subtype === "message_deleted";
+};
 
-// export const isMessageRepliedEvent = (
-//   msg: MessageEvent
-// ): msg is MessageRepliedEvent => {
-//   return (msg as MessageRepliedEvent).subtype === "message_replied";
-// };
+export const isMessageRepliedEvent = (
+  msg: MessageEvent
+): msg is MessageRepliedEvent => {
+  return (msg as MessageRepliedEvent).subtype === "message_replied";
+};
 
-// export const isThreadBroadcastMessageEvent = (
-//   msg: MessageEvent
-// ): msg is ThreadBroadcastMessageEvent => {
-//   return (msg as ThreadBroadcastMessageEvent).subtype === "thread_broadcast";
-// };
+export const isThreadBroadcastMessageEvent = (
+  msg: MessageEvent
+): msg is ThreadBroadcastMessageEvent => {
+  return (msg as ThreadBroadcastMessageEvent).subtype === "thread_broadcast";
+};
