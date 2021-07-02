@@ -2,8 +2,6 @@ import {
   Context,
   MessageEvent,
   AllMiddlewareArgs,
-  SlackEventMiddlewareArgs,
-  Middleware,
   GenericMessageEvent,
 } from "@slack/bolt";
 import { WebClient } from "@slack/web-api";
