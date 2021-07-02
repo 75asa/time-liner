@@ -19,11 +19,12 @@ if (Config.Slack.SOCKET_MODE) {
   appOption.socketMode = true;
   appOption.appToken = Config.Slack.APP_TOKEN;
 }
+console.log(Config.Slack.SOCKET_MODE, { appOption });
 const app = new App(appOption);
 
 // custom middleware
 app.use(bolt.customMiddleware.ignoreBotMessages);
-app.use(bolt.customMiddleware.ignoreThreadMessages);
+// app.use(bolt.customMiddleware.ignoreThreadMessages);
 app.use(bolt.customMiddleware.getTeamInfo);
 app.use(bolt.customMiddleware.addUsersInfoContext);
 app.use(bolt.customMiddleware.getFileInfo);

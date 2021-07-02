@@ -11,7 +11,7 @@
     "sourceMap": true,
     "rootDir": "src",
     "outDir": "lib",
-    "lib": ["ES2019"],
+    // "lib": ["ES6", "DOM"],
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*", "src/types/*"]

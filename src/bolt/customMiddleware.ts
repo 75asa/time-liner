@@ -1,6 +1,6 @@
 import { WebAPICallResult } from "@slack/web-api";
 import * as types from "./interface";
-import * as events from "./events";
+import * as events from "./messageEvents";
 
 export const ignoreBotMessages = async ({
   message,
@@ -9,13 +9,13 @@ export const ignoreBotMessages = async ({
   if (!events.isBotMessageEvent(message)) await next();
 };
 
-export const ignoreThreadMessages = async ({
-  message,
-  next,
-}: types.MiddlewareParam): Promise<void> => {
-  if (events.isThreadBroadcastMessageEvent(message)) await next();
-  if (!events.isMessageRepliedEvent(message)) await next();
-};
+// export const ignoreThreadMessages = async ({
+//   message,
+//   next,
+// }: types.MiddlewareParam): Promise<void> => {
+//   if (events.isThreadBroadcastMessageEvent(message)) await next();
+//   if (!events.isMessageRepliedEvent(message)) await next();
+// };
 
 export const getTeamInfo = async ({
   client,
@@ -68,25 +68,27 @@ export const getFileInfo = async ({
   next,
   message,
 }: types.MiddlewareParam): Promise<void> => {
-  if (!events.isGenericMessageEvent(message) || !message.files) return;
-  context.files = message.files.reduce(
-    (acc, file, idx) => {
-      console.log({ idx, file });
-      // 投稿画像などは hosted にそれ以外(e.g. snippet, POST, external files)は files に
-      if (file.mode === "hosted") {
-        console.log({ acc });
-        acc.hosted.push(file);
-      } else {
-        acc.files.push(file);
+  if (!events.isGenericMessageEvent(message)) return;
+  if (message.files) {
+    context.files = message.files.reduce(
+      (acc, file, idx) => {
+        console.log({ idx, file });
+        // 投稿画像などは hosted にそれ以外(e.g. snippet, POST, external files)は files に
+        if (file.mode === "hosted") {
+          console.log({ acc });
+          acc.hosted.push(file);
+        } else {
+          acc.files.push(file);
+        }
+        console.log(JSON.stringify(acc, null, 4));
+        return acc;
+      },
+      {
+        hosted: [],
+        files: [],
       }
-      console.log(JSON.stringify(acc, null, 4));
-      return acc;
-    },
-    {
-      hosted: [],
-      files: [],
-    }
-  );
+    );
+  }
   await next();
 };
 
