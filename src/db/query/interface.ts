@@ -13,7 +13,7 @@ export interface QueryFindMessage {
 
 export interface QueryFindTimeline {
   ts: string;
-  bindedChannelID: string;
+  boundedChannelID: string;
   contents: string;
   usersPostID: string;
 }

@@ -1,5 +1,5 @@
 import { FindAndModifyWriteOpResultObject, MongoEntityManager } from "typeorm";
-import * as types from "./inteface";
+import * as types from "./interface";
 
 export const users = async ({
   db,

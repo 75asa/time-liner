@@ -1,28 +1,21 @@
-import { App } from "@slack/bolt";
 import { WebAPICallResult } from "@slack/web-api";
 import * as types from "./interface";
+import * as events from "./messageEvents";
 
-export const notBotMessages = async ({
+export const ignoreBotMessages = async ({
   message,
   next,
 }: types.MiddlewareParam): Promise<void> => {
-  console.log({ message });
-  const isExistSubtype = message.subtype && message.subtype === "bot_message";
-  const isExistBotID = "bot_id" in message;
-  if (!isExistSubtype && !isExistBotID && !message.hidden) await next();
+  if (!events.isBotMessageEvent(message)) await next();
 };
 
-export const noThreadMessages = async ({
+export const ignoreThreadMessages = async ({
   message,
   next,
 }: types.MiddlewareParam): Promise<void> => {
-  if (!message.thread_ts) await next();
+  if (events.isThreadBroadcastMessageEvent(message)) await next();
+  if (!events.isMessageRepliedEvent(message)) await next();
 };
-
-// export const noTimeline: any = async ({ message, next }) => {
-//   // channel ID でTLに投稿されたのは無視する
-//   if (!message.thread_ts) await next();
-// };
 
 export const getTeamInfo = async ({
   client,
@@ -49,6 +42,7 @@ export const addUsersInfoContext = async ({
   context,
   next,
 }: types.MiddlewareParam): Promise<void> => {
+  if (!events.isGenericMessageEvent(message)) return;
   await client.users
     .info({
       user: message.user,
@@ -74,8 +68,9 @@ export const getFileInfo = async ({
   next,
   message,
 }: types.MiddlewareParam): Promise<void> => {
+  if (!events.isGenericMessageEvent(message)) return;
   if (message.files) {
-    context.files = await message.files.reduce(
+    context.files = message.files.reduce(
       (acc, file, idx) => {
         console.log({ idx, file });
         // 投稿画像などは hosted にそれ以外(e.g. snippet, POST, external files)は files に
@@ -114,28 +109,4 @@ export const getChannelInfo = async ({
       console.log({ err });
     });
   await next();
-};
-
-export const enableAll = async (app: App): Promise<void> => {
-  if (process.env.SLACK_REQUEST_LOG_ENABLED === "1") {
-    app.use(async (args) => {
-      const copiedArgs = JSON.parse(JSON.stringify(args));
-      // console.log({copiedArgs})
-      copiedArgs.context.botToken = "xoxb-***";
-      if (copiedArgs.context.userToken) {
-        copiedArgs.context.userToken = "xoxp-***";
-      }
-      // copiedArgs.client = {};
-      // copiedArgs.logger = {};
-      args.logger.debug(
-        "Dumping request data for debugging...\n\n" +
-          JSON.stringify(copiedArgs, null, 2) +
-          "\n"
-      );
-      const result = await args.next();
-      // console.log({result})
-      args.logger.debug("next() call completed");
-      return result;
-    });
-  }
 };

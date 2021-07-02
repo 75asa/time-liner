@@ -1,11 +1,26 @@
 {
   "name": "time-liner",
-  "description": "",
   "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
   "author": "75asa",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "compile": "tsc",
+    "deploy": "git push origin HEAD && git push heroku master",
+    "dev": "nodemon --watch './src/*.ts' --exec 'ts-node' src/index.ts --trace-warnings",
+    "dev:watch": "nodemon -L -w src -e ts -x \"tsc && node --require dotenv/config --inspect=localhost:9229 --experimental-modules lib/index.js\"",
+    "format": "prettier --write './src/**/*.{ts,js}'",
+    "lint": "eslint --ext .ts,.tsx ./src --cache",
+    "lint:fix": "eslint --ext .ts,.tsx ./src --cache --fix",
+    "postinstall": "npm run build",
+    "start": "node lib/index.js"
+  },
   "dependencies": {
-    "@slack/bolt": "^2.3.0",
-    "@slack/web-api": "^5.14.0",
+    "@slack/bolt": "3.3.x",
+    "@slack/web-api": "^6.2.4",
     "dotenv": "^8.2.0",
     "husky": "^4.3.0",
     "lodash": "^4.17.20",
@@ -14,46 +29,25 @@
   },
   "devDependencies": {
     "@types/eslint": "^7.2.1",
-    "@types/node": "^14.6.0",
+    "@types/node": "^15.14.0",
     "@typescript-eslint/eslint-plugin": "^3.9.1",
     "@typescript-eslint/parser": "^3.9.1",
     "eslint": "^7.7.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "fixpack": "^3.0.6",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
     "pretty-quick": "^3.1.0",
     "ts-node": "^9.0.0",
-    "typescript": ">=3.3.1 <4.1."
+    "typescript": "^4.1.0"
   },
   "engines": {
     "yarn": "1.*",
-    "node": "12.x"
+    "node": "14.x"
   },
   "husky": {
     "hooks": {
       "pre-commit": "fixpack && git add package.json && pretty-quick --staged"
     }
-  },
-  "keywords": [],
-  "license": "MIT",
-  "main": "lib/index.js",
-  "scripts": {
-    "build": "tsc -p .",
-    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "compile": "tsc",
-    "deploy": "git push origin HEAD && git push heroku master",
-    "dev": "nodemon --watch './src/*.ts' --exec 'ts-node' src/index.ts --trace-warnings",
-    "dev:watch": "nodemon -L -w src -e ts -x \"tsc && node --require dotenv/config --inspect=localhost:9229 --experimental-modules lib/index.js\"",
-    "format": "prettier --write './src/**/*.{ts,js}'",
-    "lint": "eslint --ext .ts,.tsx ./src --cache",
-    "lintfix": "eslint --ext .ts,.tsx ./src --cache --fix",
-    "local": "npm run build:live",
-    "ngrok": "ngrok http 3333",
-    "postinstall": "npm run build",
-    "release": "git checkout && git pull && npm version",
-    "start": "node lib/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

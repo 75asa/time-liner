@@ -1,36 +1,37 @@
-import { App, LogLevel } from "@slack/bolt";
+import { App, AppOptions, LogLevel } from "@slack/bolt";
 import { ChatPostMessageArguments } from "@slack/web-api";
 import { createConnection, MongoEntityManager, Connection } from "typeorm";
-import dotenv from "dotenv";
 import * as bolt from "./bolt";
+import { Config } from "./config";
 import * as query from "./db/query";
-
-dotenv.config();
-
-Object.keys(dotenv).forEach((key) => {
-  process.env[key] = dotenv[key];
-});
 
 let connection: Connection;
 let db: MongoEntityManager;
 
 // Initializes your app with your bot token and signing secret
-const app = new App({
+const appOption: AppOptions = {
   logLevel: LogLevel.DEBUG,
-  token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-});
+  token: Config.Slack.BOT_TOKEN,
+  signingSecret: Config.Slack.SIGNING_SECRET,
+};
+// Socket mode
+if (Config.Slack.SOCKET_MODE) {
+  appOption.socketMode = true;
+  appOption.appToken = Config.Slack.APP_TOKEN;
+}
+const app = new App(appOption);
 
-// custom middleware's
-app.use(bolt.customMiddlewares.notBotMessages);
-app.use(bolt.customMiddlewares.noThreadMessages);
-app.use(bolt.customMiddlewares.getTeamInfo);
-app.use(bolt.customMiddlewares.addUsersInfoContext);
-app.use(bolt.customMiddlewares.getFileInfo);
+// custom middleware
+app.use(bolt.customMiddleware.ignoreBotMessages);
+app.use(bolt.customMiddleware.ignoreThreadMessages);
+app.use(bolt.customMiddleware.getTeamInfo);
+app.use(bolt.customMiddleware.addUsersInfoContext);
+app.use(bolt.customMiddleware.getFileInfo);
 
 app.message(
-  bolt.customMiddlewares.getChannelInfo,
+  bolt.customMiddleware.getChannelInfo,
   async ({ client, context, message }) => {
+    if (!bolt.events.isGenericMessageEvent(message)) return;
     const msgOption: ChatPostMessageArguments = {
       token: client.token,
       channel: process.env.CHANNEL_NAME,
@@ -79,7 +80,7 @@ app.message(
 
       const queryFindTimeline: query.interfaces.QueryFindTimeline = {
         ts: resPostTL.ts,
-        bindedChannelID: resPostTL.channel as string,
+        boundedChannelID: resPostTL.channel as string,
         contents: resPostTL.message.blocks as string,
         usersPostID: resInsertedUsersPosts.lastErrorObject.upserted as string,
       };
@@ -143,7 +144,11 @@ app.event("member_joined_channel", async () => {
   db = new MongoEntityManager(connection);
 
   // Start your app
-  await app.start(process.env.PORT || 3000);
+  await app.start(Config.Slack.SOCKET_MODE ? null : Config.Slack.PORT);
 
-  console.log("⚡️ Bolt app is running!");
+  console.log(
+    `⚡️ Bolt app is running! on ${
+      Config.Slack.SOCKET_MODE ? "Socket Mode" : Config.Slack.PORT
+    }`
+  );
 })();
