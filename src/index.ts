@@ -146,5 +146,9 @@ app.event("member_joined_channel", async () => {
   // Start your app
   await app.start(Config.Slack.SOCKET_MODE ? null : Config.Slack.PORT);
 
-  console.log("⚡️ Bolt app is running!");
+  console.log(
+    `⚡️ Bolt app is running! on ${
+      Config.Slack.SOCKET_MODE ? "Socket Mode" : Config.Slack.PORT
+    }`
+  );
 })();
