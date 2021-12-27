@@ -1,69 +1,73 @@
-# time-liner
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
+</p>
 
-![compile](https://github.com/75asa/time-liner/workflows/compile/badge.svg)
-![Release Drafter](https://github.com/75asa/time-liner/workflows/Release%20Drafter/badge.svg)
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-## 概要
+  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
+<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
+    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-- 指定の slack チャンネルを別のチャンネルに転送してくれる SlackApp
+## Description
 
-## 導入
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-- git clone
-- [slack api](https://api.slack.com/apps) から slackApp を作る
-- 以下のスコープを OAuth & Permissions より選択
-  - bot
-    - channels:history
-    - channels:read
-    - chat:write
-    - files:read
-    - im:history
-    - incoming-webhook
-    - users.profile:read
-    - users:read
-    - users:read:email
-    - eam:read
-  - user
-    - chat:write
-    - links:read
-    - links:write
-    - files:write
-- `$cp .env.example .env`
-  - .env 項目
-    - `SLACK_WORKSPACE`に slack のワークスペース名
-    - `CHANNEL_NAME`に転送先の slack チャンネル名
-    - `PORT`にリスニングしたい番号（入れなければデフォルトでは _3000_）
-    - Basic information
-      - `Signing Secret`を`SLACK_SIGNING_SECRET`
-    - OAuth & Permission
-      - `OAuth Access Token`を`SLACK_OAUTH_TOKEN`
-      - `Bot User OAuth Access Token`を`SLACK_SIGNING_SECRET`
-- ローカルで以下を実施
-  - `$ yarn` | `$ npm i`
-  - `ngrok`を Homebrew でインストール（入ってない方のみ）
-  - `$ ngrok http ${n}` でポート番号指定して ngrok を立ち上げる
-  - CLI に出てきた URL を slackApp の InteractiveComponents に貼り付け
-- slackApp で以下を設定
-  - Interactive Components
-    - RequestURL に ngrok の URL を貼り付け
-  - Event Subscriptions
-    - RequestURL に `${ngrokのURL}/slack/events` を貼り付け
-    - Subscribe to bot events に 以下を選択し追加
-      - message.channels
-      - message.im
-- `ngrok`はセッションが切れたら都度再起動し slackApp の RequestURL を新規 URL で更新
+## Installation
 
-## デバッグ
+```bash
+$ npm install
+```
 
-任意の位置にブレークポイントを設定後、デバッガから`Attach to Bolt`を実行。
-`$npm run dev:watch`で本アプリをデバッグ実行。
+## Running the app
 
-### 参考
+```bash
+# development
+$ npm run start
 
-[VSCode で Bolt for TypeScript をホットリロード+デバッグ実行させてみよう](https://qiita.com/tk_zawa/items/6a4144e1dd3c3618b139)
+# watch mode
+$ npm run start:dev
 
-## ビルド
+# production mode
+$ npm run start:prod
+```
 
-- heroku の pipeline を使用
+## Test
 
-## 注意
+```bash
+# unit tests
+$ npm run test
+
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
+```
+
+## Support
+
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+
+## Stay in touch
+
+- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
+
+## License
+
+Nest is [MIT licensed](LICENSE).
