@@ -9,12 +9,20 @@ export class BoltService {
     this.#app = new App({
       logLevel: LogLevel.DEBUG,
       token: process.env.SLACK_BOT_TOKEN,
+      appToken: process.env.SLACK_APP_TOKEN,
       signingSecret: process.env.SLACK_SIGNING_SECRET,
+    });
+  }
+
+  async #extend() {
+    this.#app.message(async ({ client, context, message }) => {
+      console.log({ client, context, message });
     });
   }
 
   async run() {
     await this.#app.start(Number(process.env.PORT) || 3000);
     console.log('⚡️ Bolt app is running!');
+    await this.#extend();
   }
 }
