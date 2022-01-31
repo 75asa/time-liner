@@ -2,16 +2,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to Bolt",
-      "type": "node",
-      "request": "attach",
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Launch NestJS WS",
       "port": 9229,
-      "address": "localhost",
-      "localRoot": "${workspaceFolder}/lib",
-      "protocol": "inspector",
-      "outFiles": ["${workspaceFolder}/lib/**/*.js"],
-      "trace": true,
-      "restart": true
+      "sourceMaps": true,
+      "cwd": "${workspaceRoot}",
+      "restart": true,
+      "stopOnEntry": false,
+      "console": "integratedTerminal",
+      "protocol": "inspector"
     }
   ]
 }
