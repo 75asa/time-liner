@@ -2,16 +2,22 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to Bolt",
-      "type": "node",
-      "request": "attach",
-      "port": 9229,
-      "address": "localhost",
-      "localRoot": "${workspaceFolder}/lib",
-      "protocol": "inspector",
-      "outFiles": ["${workspaceFolder}/lib/**/*.js"],
-      "trace": true,
-      "restart": true
-    }
+      "type": "pwa-node",
+      "name": "Launch via yarn",
+      "request": "launch",
+      "runtimeArgs": [
+          "run",
+          "start:watch"
+      ],
+      "runtimeExecutable": "yarn",
+      "skipFiles": [
+          "<node_internals>/**"
+      ],
+      "sourceMaps": true,
+      "envFile": "${workspaceFolder}/.env",
+      "cwd": "${workspaceRoot}",
+      "console": "integratedTerminal",
+      "protocol": "inspector"
+    },
   ]
 }
