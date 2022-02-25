@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BoltModule } from './bolt/bolt.module';
+import { EnvironmentModule } from './config/environment/environment.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), BoltModule],
+  imports: [EnvironmentModule, BoltModule],
   controllers: [AppController],
   providers: [AppService],
 })

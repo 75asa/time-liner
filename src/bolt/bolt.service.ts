@@ -1,28 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { App, LogLevel } from '@slack/bolt';
+import { EnvironmentService } from '../config/environment/environment.service';
 
 @Injectable()
 export class BoltService {
-  #app: App;
+  readonly #app: App;
   // Initializes your app with your bot token and signing secret
-  constructor() {
+  constructor(private readonly environmentService: EnvironmentService) {
     this.#app = new App({
       logLevel: LogLevel.DEBUG,
-      token: process.env.SLACK_BOT_TOKEN,
-      appToken: process.env.SLACK_APP_TOKEN,
-      signingSecret: process.env.SLACK_SIGNING_SECRET,
-    });
-  }
-
-  async #extend() {
-    this.#app.message(async ({ client, context, message }) => {
-      console.log({ client, context, message });
+      token: this.environmentService.SlackBotToken,
+      socketMode: true,
+      appToken: this.environmentService.SlackAppToken,
+      signingSecret: this.environmentService.SlackSigningSecret,
     });
   }
 
   async run() {
-    await this.#app.start(Number(process.env.PORT) || 3000);
+    await this.#app.start();
     console.log('⚡️ Bolt app is running!');
-    await this.#extend();
   }
 }
