@@ -3,15 +3,21 @@
   "configurations": [
     {
       "type": "pwa-node",
+      "name": "Launch via yarn",
       "request": "launch",
-      "name": "Launch NestJS WS",
-      "port": 9229,
+      "runtimeArgs": [
+          "run",
+          "start:watch"
+      ],
+      "runtimeExecutable": "yarn",
+      "skipFiles": [
+          "<node_internals>/**"
+      ],
       "sourceMaps": true,
+      "envFile": "${workspaceFolder}/.env",
       "cwd": "${workspaceRoot}",
-      "restart": true,
-      "stopOnEntry": false,
       "console": "integratedTerminal",
       "protocol": "inspector"
-    }
+    },
   ]
 }
